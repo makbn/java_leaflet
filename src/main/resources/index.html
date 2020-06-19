@@ -1,0 +1,230 @@
+<html>
+<head>
+    <title>Quick Start - Leaflet</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+
+    <script>
+        function jlMapCallbackListener(functionName, param1, param2) {
+            //do nothing
+        }
+
+        let fun = jlMapCallbackListener;
+        console.log("jlMapCallbackRegister")
+        jlMapCallbackListener = function() {
+            app.functionCalled(arguments[0], arguments[1], arguments[2]);
+            fun.apply(this, arguments);
+        }
+
+    </script>
+</head>
+<body style="margin: 0; background-color: #191a1a;">
+<div id="mapid" style="width: 100%; height: 100%; position: relative; background-color: #191a1a;"
+     class="leaflet-container leaflet-retina leaflet-safari leaflet-fade-anim leaflet-grab leaflet-touch-drag"
+     tabindex="0">
+    <div class="leaflet-control-container">
+        <div class="leaflet-top leaflet-right"></div>
+        <div class="leaflet-bottom leaflet-left"></div>
+        <div class="leaflet-bottom leaflet-right" style="margin-right: 16px; border-radius: 30px;" >
+
+            <div style="padding: 1px 8px 1px 8px; margin-right: 8px; border-radius: 30px; background-color: rgba(256, 256,256, 0.7);"  class=" leaflet-control"><a href="https://leafletjs.com"
+                                                                        title="A JS library for interactive maps">  Leaflet</a>
+                | Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a
+                        href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a
+                        href="https://www.mapbox.com/">Mapbox  </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var onClickPopup = true;
+    var markers = [];
+    var popups = [];
+    var polyLines = []
+    var polygons = []
+    var circles = []
+
+    var jlmap = L.map('mapid').setView([35.63, 51.45], 3);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        id: 'mapbox/dark-v10',
+        tileSize: 512,
+        detectRetina: true,
+        zoomOffset: -1
+    }).addTo(jlmap);
+
+
+   /*
+
+    L.circle([51.508, -0.11], 500, {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5
+    }).addTo(jlmap).bindPopup("I am a circle.");
+
+    L.polygon([
+        [51.509, -0.08],
+        [51.503, -0.06],
+        [51.51, -0.047]
+    ]).addTo(jlmap).bindPopup("I am a polygon.");*/
+
+    jlmap.on('click', onMapClick);
+
+
+    var popup = L.popup();
+
+    function onMapClick(e) {
+        jlMapCallbackListener('click', e.latlng, 'e.layerPoint');
+        if(onClickPopup){
+            popup
+                .setLatLng(e.latlng)
+                .setContent("You clicked the map at " + e.latlng)
+                .openOn(jlmap);
+        }
+    }
+
+    function addCircle(latlng, radius = 200, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2 , smoothFactor = 1.0) {
+        var circle =  L.circle(latlng, {
+            "radius": radius,
+            "color": color,
+            "fillColor": fillColor,
+            "weight": weight,
+            "stroke": stroke,
+            "fill": fill,
+            "opacity": opacity,
+            "fillOpacity": fillOpacity,
+            "smoothFactor": smoothFactor
+        }).addTo(jlmap);
+        let len = circles.push(circle);
+        return len - 1;
+
+    }
+
+    function removeCircle(index) {
+        let circle = circles[index];
+        if(circle === undefined){
+            return false;
+        }
+        delete circles[index];
+        jlmap.removeLayer(circle);
+        return true;
+    }
+
+
+    function addPolygon(latlngs, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2 , smoothFactor = 1.0) {
+        var polygon =  L.polygon(latlngs, {
+            "color": color,
+            "fillColor": fillColor,
+            "weight": weight,
+            "stroke": stroke,
+            "fill": fill,
+            "opacity": opacity,
+            "fillOpacity": fillOpacity,
+            "smoothFactor": smoothFactor
+        }).addTo(jlmap);
+        let len = polygons.push(polygon);
+        return len - 1;
+    }
+
+    function removePolygon(index) {
+        let polygon = polygons[index];
+        if(polygon === undefined){
+            return false;
+        }
+        delete polygons[index];
+        jlmap.removeLayer(polygon);
+        return true;
+    }
+
+    function addPolyLine(latlngs, color, weight = 3, stroke = true, opacity = 1.0, smoothFactor = 1.0) {
+        var polyline = L.polyline(latlngs, {
+            "color": color,
+            "stroke": stroke,
+            "weight": weight,
+            "opacity": opacity,
+            "smoothFactor": smoothFactor
+        }).addTo(jlmap);
+
+        let len = polyLines.push(polyline);
+        return len - 1;
+    }
+
+    function removePolyLine(index) {
+        let polyline = polyLines[index];
+        if(polyline === undefined){
+            return false;
+        }
+        delete polyLines[index];
+        jlmap.removeLayer(polyline);
+        return true;
+    }
+
+    function setLatLng(lat, lng, duration, animated) {
+        jlmap.setView([lat, lng], jlmap.getZoom(), {
+            "animate": animated,
+            "pan": {
+                "duration": duration
+            }
+        });
+    }
+
+    function addPopup(lat, lng, text, closeButton = true , autoClose = true) {
+        let newPopup = L.popup({
+            "closeButton" : closeButton,
+            "autoClose" : autoClose
+        }).setLatLng([lat, lng])
+            .setContent(text)
+            .openOn(jlmap);
+        let len = popups.push(newPopup);
+        return len - 1;
+    }
+
+    function removePopup(index) {
+        let popup = popups[index];
+        if(index === undefined){
+            return false;
+        }
+
+        delete popups[index];
+        jlmap.removeLayer(popup);
+        return true;
+    }
+
+    function removeNativeAttr() {
+        document.getElementsByClassName('leaflet-control-attribution')[0].remove()
+    }
+
+    function addMarker(lat, lng, text) {
+        let marker = L.marker([lat, lng]);
+        let len = markers.push(marker);
+
+        marker.addTo(jlmap);
+        if(text){
+            marker.bindPopup(text)
+            .openPopup();
+        }
+        return len - 1;
+    }
+
+    function removeMarker(index) {
+        let marker = markers[index]
+        if(marker === undefined){
+            return false;
+        }
+        delete markers[index];
+        jlmap.removeLayer(marker)
+        return true;
+    }
+
+</script>
+
+
+</body>
+</html>
