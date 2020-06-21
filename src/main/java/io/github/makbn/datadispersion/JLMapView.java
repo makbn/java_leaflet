@@ -11,10 +11,16 @@ import javafx.geometry.Insets;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
 import netscape.javascript.JSObject;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 
 public class JLMapView extends JLMapController {
@@ -36,16 +42,16 @@ public class JLMapView extends JLMapController {
         webView.getEngine().onErrorProperty().addListener((observable, oldValue, newValue) -> System.out.println(""));
         webView.getEngine().getLoadWorker().stateProperty().addListener(
                 (observable, oldValue, newValue) -> {
-
+                    checkForBrowsing(webView.getEngine());
                     if(newValue == Worker.State.FAILED){
                         System.out.println("failed");
-                    } else if( newValue != Worker.State.SUCCEEDED) {
-                        setBlurEffectForMap();
-                    } else {
+                    } else if( newValue == Worker.State.SUCCEEDED) {
                         removeMapBlur();
                         webView.getEngine().executeScript("removeNativeAttr()");
                         addControllerToDocument();
                         mapListener.mapLoadedSuccessfully(this);
+                    } else {
+                        setBlurEffectForMap();
                     }
                 });
 
@@ -61,6 +67,27 @@ public class JLMapView extends JLMapController {
         setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         getChildren().add(webView);
         customizeWebviewStyles();
+    }
+
+    private void checkForBrowsing(WebEngine engine) {
+        String toBeopen =
+                engine.getLoadWorker().getMessage().trim();
+        System.out.println("tobeopen: " + toBeopen);
+        if (toBeopen.contains("http://") || toBeopen.contains("https://")) {
+            engine.getLoadWorker().cancel();
+            try {
+                String os = System.getProperty("os.name", "generic");
+                if(os.toLowerCase().contains("mac")){
+                    Runtime.getRuntime().exec("open " + toBeopen);
+                }else if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    Desktop.getDesktop().browse(new URL(toBeopen).toURI());
+                }else {
+                    Runtime.getRuntime().exec("xdg-open " + toBeopen);
+                }
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void removeMapBlur() {
