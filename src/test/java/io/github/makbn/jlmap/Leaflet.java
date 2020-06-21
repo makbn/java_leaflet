@@ -1,6 +1,7 @@
 package io.github.makbn.jlmap;
 
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
+import io.github.makbn.jlmap.model.JLCircleMarker;
 import io.github.makbn.jlmap.model.JLLatLng;
 import io.github.makbn.jlmap.model.JLMarker;
 import io.github.makbn.jlmap.model.JLOptions;
@@ -23,32 +24,32 @@ public class Leaflet extends Application {
     @Override
     public void start(Stage stage) {
 
-       stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initStyle(StageStyle.TRANSPARENT);
 
-        final JLMapView map = new JLMapView();
+        final JLMapView map = JLMapView.builder().build();
 
-       // BorderPane root = createBasePane();
-        ListView<JLLatLng> listView = getAddressListView(map);
+        // BorderPane root = createBasePane();
+        //ListView<JLLatLng> listView = getAddressListView(map);
 
         AnchorPane inside = createBasePane();
 
         AnchorPane root = new AnchorPane(inside);
         //#191a1a
         root.setBackground(Background.EMPTY);
-       // root.setStyle("-fx-background-color: #191a1a");
+        // root.setStyle("-fx-background-color: #191a1a");
 
 
-        root.setMinHeight(Properties.INIT_MIN_HEIGHT_STAGE);
-        root.setMinWidth(Properties.INIT_MIN_WIDTH_STAGE);
+        root.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
+        root.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
 
 
         Scene scene = new Scene(root);
 
         inside.getChildren().add(map);
-        inside.getChildren().add(listView);
+        //inside.getChildren().add(listView);
 
-        stage.setMinHeight(Properties.INIT_MIN_HEIGHT_STAGE);
-        stage.setMinWidth(Properties.INIT_MIN_WIDTH_STAGE);
+        stage.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
+        stage.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
 
 
         scene.setFill(Color.TRANSPARENT);
@@ -102,6 +103,9 @@ public class Leaflet extends Application {
                         .build());
                 JLMarker jlMarker = map.getUiLayer()
                         .addMarker(JLLatLng.builder().lat(35.63).lng(51.45).name("tehran-pint").build(), "tehran");
+                JLCircleMarker jlMarkerCircle = map.getVectorLayer()
+                        .addCircleMarker(JLLatLng.builder().lat(35.63).lng(40.45).name("sari-pint").build());
+
                 System.out.println(jlMarker);
 
                 map.getVectorLayer().addCircle(JLLatLng.builder().lat(35.63).lng(51.45).name("tehran-pint").build(),
@@ -143,10 +147,10 @@ public class Leaflet extends Application {
     private AnchorPane createBasePane() {
         AnchorPane inside = new AnchorPane();
         inside.setStyle("-fx-background-color: #555555");
-        AnchorPane.setLeftAnchor(inside, (double) Properties.NORMAL_MARGIN);
-        AnchorPane.setRightAnchor(inside, (double) Properties.NORMAL_MARGIN);
-        AnchorPane.setTopAnchor(inside, (double) Properties.NORMAL_MARGIN);
-        AnchorPane.setBottomAnchor(inside, (double) Properties.NORMAL_MARGIN);
+        AnchorPane.setLeftAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
+        AnchorPane.setRightAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
+        AnchorPane.setTopAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
+        AnchorPane.setBottomAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
 
         return inside;
 

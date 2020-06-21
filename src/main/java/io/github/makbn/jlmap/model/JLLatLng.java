@@ -1,6 +1,6 @@
 package io.github.makbn.jlmap.model;
 
-import io.github.makbn.jlmap.Properties;
+import io.github.makbn.jlmap.JLProperties;
 import lombok.*;
 
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class JLLatLng {
                 + Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(dest.getLat()))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = Properties.EARTH_RADIUS * c * 1000;
+        double distance = JLProperties.EARTH_RADIUS * c * 1000;
 
         distance = Math.pow(distance, 2);
         return Math.sqrt(distance);

@@ -1,5 +1,6 @@
 package io.github.makbn.jlmap.layer;
 
+import io.github.makbn.jlmap.JLProperties;
 import io.github.makbn.jlmap.model.*;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
@@ -115,7 +116,6 @@ public class JLVectorLayer extends JLLayer{
         return addPolygon(vertices, JLOptions.DEFAULT);
     }
 
-
     /**
      * Remove a {{@link JLPolygon}} from the map by id.
      * @param id of Polygon
@@ -146,11 +146,50 @@ public class JLVectorLayer extends JLLayer{
     }
 
     /**
-     * Add {{@link JLCircle}} to the map with {{@link JLOptions#DEFAULT}} options
+     * Add {{@link JLCircle}} to the map with {{@link JLOptions#DEFAULT}} options.
+     * Default value for radius is {{@link JLProperties#DEFAULT_CIRCLE_RADIUS}}
      * @see {{@link JLVectorLayer#addCircle(JLLatLng, int, JLOptions)}}
      */
     public JLCircle addCircle(JLLatLng center){
-        return addCircle(center, 200, JLOptions.DEFAULT);
+        return addCircle(center, JLProperties.DEFAULT_CIRCLE_RADIUS, JLOptions.DEFAULT);
+    }
+
+    /**
+     * Remove a {{@link JLCircle}} from the map by id.
+     * @param id of Circle
+     * @return {{@link Boolean#TRUE}} if removed successfully
+     */
+    public boolean removeCircle(int id){
+        String result = engine.executeScript(String.format("removeCircle(%d)", id))
+                .toString();
+        return Boolean.parseBoolean(result);
+    }
+
+    /**
+     * Add a {{@link JLCircleMarker}} to the map;
+     * @param center coordinate of the circle.
+     * @param radius radius of circle in meter.
+     * @param options see {{@link JLOptions}}
+     * @return the instance of created {{@link JLCircleMarker}}
+     */
+    public JLCircleMarker addCircleMarker(JLLatLng center, int radius, JLOptions options){
+        String result = engine.executeScript(String.format("addCircleMarker([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
+                center.getLat(), center.getLng(), radius, convertColorToString(options.getColor()), convertColorToString(options.getFillColor()),
+                options.getWeight(), options.isStroke(), options.isFill(), options.getOpacity(),
+                options.getFillOpacity(), options.getSmoothFactor()))
+                .toString();
+
+        int index = Integer.parseInt(result);
+        return new JLCircleMarker(index, radius, center, options);
+    }
+
+    /**
+     * Add {{@link JLCircleMarker}} to the map with {{@link JLOptions#DEFAULT}} options.
+     * Default value for radius is {{@link JLProperties#DEFAULT_CIRCLE_MARKER_RADIUS}}
+     * @see {{@link JLVectorLayer#addCircle(JLLatLng, int, JLOptions)}}
+     */
+    public JLCircleMarker addCircleMarker(JLLatLng center){
+        return addCircleMarker(center, JLProperties.DEFAULT_CIRCLE_MARKER_RADIUS, JLOptions.DEFAULT);
     }
 
 
