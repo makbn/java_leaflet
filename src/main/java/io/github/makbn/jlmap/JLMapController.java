@@ -12,6 +12,9 @@ import javafx.scene.web.WebView;
 
 import java.util.HashMap;
 
+/**
+ * by: Mehdi Akbarian Rastaghi (@makbn)
+ */
 public abstract class JLMapController extends AnchorPane {
 
     protected abstract WebView getWebView();

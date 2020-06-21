@@ -1,5 +1,8 @@
 package io.github.makbn.jlmap;
 
+/**
+ * by: Mehdi Akbarian Rastaghi (@makbn)
+ */
 public class JLProperties {
 
     public final static int INIT_MIN_WIDTH = 1024;
