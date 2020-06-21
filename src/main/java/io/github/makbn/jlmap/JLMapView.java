@@ -26,8 +26,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 
+/**
+ * by: Mehdi Akbarian Rastaghi (@makbn)
+ */
 @Log4j2
-
 public class JLMapView extends JLMapController {
 
     private WebView webView;
@@ -43,17 +45,11 @@ public class JLMapView extends JLMapController {
 
     @Builder
     private JLMapView(OnJLMapViewListener mapListener, JLProperties.MapType mapType, JLLatLng startCoordinate) {
-        this();
         this.mapListener = mapListener;
         this.mapType = mapType;
         this.startCoordinate = startCoordinate;
-    }
-
-    private JLMapView() {
         initialize();
     }
-
-
 
     private void initialize() {
         webView = new WebView();
