@@ -17,8 +17,8 @@
         }
 
         let fun = jlMapCallbackListener;
-        console.log("jlMapCallbackRegister")
-        jlMapCallbackListener = function() {
+        //console.log("jlMapCallbackRegister")
+        jlMapCallbackListener = function () {
             app.functionCalled(arguments[0], arguments[1], arguments[2]);
             fun.apply(this, arguments);
         }
@@ -32,66 +32,121 @@
     <div class="leaflet-control-container">
         <div class="leaflet-top leaflet-right"></div>
         <div class="leaflet-bottom leaflet-left"></div>
-        <div class="leaflet-bottom leaflet-right" style="margin-right: 16px; border-radius: 30px;" >
+        <div class="leaflet-bottom leaflet-right" style="margin-right: 16px; border-radius: 30px;">
 
-            <div style="padding: 1px 8px 1px 8px; margin-right: 8px; border-radius: 30px; background-color: rgba(256, 256,256, 0.7);"  class=" leaflet-control"><a href="https://github.com/makbn/java_leaflet"
-                                                                        title="A JS library for interactive maps">  Java-Leaflet</a>
+            <div style="padding: 1px 8px 1px 8px; margin-right: 8px; border-radius: 30px; background-color: rgba(256, 256,256, 0.7);"
+                 class=" leaflet-control"><a href="https://github.com/makbn/java_leaflet"
+                                             title="A JS library for interactive maps"> Java-Leaflet</a>
                 | Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a
                         href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a
-                        href="https://www.mapbox.com/">Mapbox  </a>
+                        href="https://www.mapbox.com/">Mapbox </a>
             </div>
         </div>
     </div>
 </div>
 <script>
+    let urlParams = new URLSearchParams(window.location.search);
     var onClickPopup = true;
     var markers = [];
+    var circleMarkers = [];
     var popups = [];
     var polyLines = []
     var polygons = []
     var circles = []
 
     var jlmap = L.map('mapid').setView([35.63, 51.45], 3);
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}' +
+        '?access_token=' + getAccessToken(), {
         maxZoom: 18,
-        id: 'mapbox/dark-v10',
+        id: mapId(),
         tileSize: 512,
         detectRetina: true,
         zoomOffset: -1
     }).addTo(jlmap);
 
 
-   /*
+    function getAccessToken() {
+        let token = urlParams.get('access_token')
 
-    L.circle([51.508, -0.11], 500, {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5
-    }).addTo(jlmap).bindPopup("I am a circle.");
+        if(token){
+            return token;
+        }
 
-    L.polygon([
-        [51.509, -0.08],
-        [51.503, -0.06],
-        [51.51, -0.047]
-    ]).addTo(jlmap).bindPopup("I am a polygon.");*/
+        return 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+    }
 
-    jlmap.on('click', onMapClick);
+    function mapId() {
+        let mapid = urlParams.get('mapid');
+        switch (mapid) {
+            case 'STREET':
+                return 'mapbox/streets-v11'
+            case 'LIGHT':
+                return 'mapbox/light-v10';
+            case 'OUTDOOR':
+                return 'mapbox/outdoors-v11';
+            case 'SATELLITE':
+                return 'mapbox/satellite-v9';
+            case 'SATELLITE_STREET':
+                return 'mapbox/satellite-streets-v11';
+            default:
+                return 'mapbox/dark-v10';
+        }
+    }
 
+    function addSVGOverlay(svgElementBounds, innerHTML, viewBox) {
+        var svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+        svgElement.setAttribute('viewBox', viewBox /*"0 0 200 200"*/);
+        svgElement.innerHTML = innerHTML;
+        //'<rect width="200" height="200"/><rect x="75" y="23" width="50" height="50" style="fill:red"/><rect x="75" y="123" width="50" height="50" style="fill:#0013ff"/>';
+
+        // var svgElementBounds = [ [ 35.63, 51.45 ], [ 13, -100 ] ];
+        L.svgOverlay(svgElement, svgElementBounds)
+            .addTo(jlmap);
+    }
 
     var popup = L.popup();
+    jlmap.on('click', onMapClick);
 
     function onMapClick(e) {
-        jlMapCallbackListener('click', e.latlng, 'e.layerPoint');
-        if(onClickPopup){
+        jlMapCallbackListener('click', e.latlng, e.layerPoint);
+        if (onClickPopup) {
             popup
                 .setLatLng(e.latlng)
-                .setContent("You clicked the map at " + e.latlng)
+                .setContent("You clicked the map at" + e.latlng)
                 .openOn(jlmap);
         }
     }
 
-    function addCircle(latlng, radius = 200, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2 , smoothFactor = 1.0) {
-        var circle =  L.circle(latlng, {
+
+    function addCircleMarker(latlng, radius = 10, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
+        var circleM = L.circleMarker(latlng, {
+            "radius": radius,
+            "color": color,
+            "fillColor": fillColor,
+            "weight": weight,
+            "stroke": stroke,
+            "fill": fill,
+            "opacity": opacity,
+            "fillOpacity": fillOpacity,
+            "smoothFactor": smoothFactor
+        }).addTo(jlmap);
+        let len = circleMarkers.push(circleM);
+        return len - 1;
+    }
+
+    function removeCircleMarker(index) {
+        let circleM = circleMarkers[index];
+        if (circleM === undefined) {
+            return false;
+        }
+        delete circleMarkers[index];
+        jlmap.removeLayer(circleM);
+        return true;
+    }
+
+    function addCircle(latlng, radius = 200, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
+        var circle = L.circle(latlng, {
             "radius": radius,
             "color": color,
             "fillColor": fillColor,
@@ -109,7 +164,7 @@
 
     function removeCircle(index) {
         let circle = circles[index];
-        if(circle === undefined){
+        if (circle === undefined) {
             return false;
         }
         delete circles[index];
@@ -118,8 +173,8 @@
     }
 
 
-    function addPolygon(latlngs, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2 , smoothFactor = 1.0) {
-        var polygon =  L.polygon(latlngs, {
+    function addPolygon(latlngs, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
+        var polygon = L.polygon(latlngs, {
             "color": color,
             "fillColor": fillColor,
             "weight": weight,
@@ -135,7 +190,7 @@
 
     function removePolygon(index) {
         let polygon = polygons[index];
-        if(polygon === undefined){
+        if (polygon === undefined) {
             return false;
         }
         delete polygons[index];
@@ -158,7 +213,7 @@
 
     function removePolyLine(index) {
         let polyline = polyLines[index];
-        if(polyline === undefined){
+        if (polyline === undefined) {
             return false;
         }
         delete polyLines[index];
@@ -175,10 +230,10 @@
         });
     }
 
-    function addPopup(lat, lng, text, closeButton = true , autoClose = true) {
+    function addPopup(lat, lng, text, closeButton = true, autoClose = true) {
         let newPopup = L.popup({
-            "closeButton" : closeButton,
-            "autoClose" : autoClose
+            "closeButton": closeButton,
+            "autoClose": autoClose
         }).setLatLng([lat, lng])
             .setContent(text)
             .openOn(jlmap);
@@ -188,7 +243,7 @@
 
     function removePopup(index) {
         let popup = popups[index];
-        if(index === undefined){
+        if (index === undefined) {
             return false;
         }
 
@@ -206,16 +261,16 @@
         let len = markers.push(marker);
 
         marker.addTo(jlmap);
-        if(text){
+        if (text) {
             marker.bindPopup(text)
-            .openPopup();
+                .openPopup();
         }
         return len - 1;
     }
 
     function removeMarker(index) {
         let marker = markers[index]
-        if(marker === undefined){
+        if (marker === undefined) {
             return false;
         }
         delete markers[index];
@@ -224,7 +279,5 @@
     }
 
 </script>
-
-
 </body>
 </html>

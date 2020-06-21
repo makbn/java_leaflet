@@ -5,6 +5,8 @@ import io.github.makbn.jlmap.layer.JLLayer;
 import io.github.makbn.jlmap.layer.JLUiLayer;
 import io.github.makbn.jlmap.layer.JLVectorLayer;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
+import io.github.makbn.jlmap.model.JLLatLng;
+import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
@@ -14,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
+import lombok.Builder;
 import lombok.extern.log4j.Log4j2;
 import netscape.javascript.JSObject;
 
@@ -24,19 +27,35 @@ import java.net.URL;
 import java.util.HashMap;
 
 @Log4j2
+
 public class JLMapView extends JLMapController {
 
     private WebView webView;
     private OnJLMapViewListener mapListener;
     private HashMap<String, JLLayer> layers;
     private boolean controllerAdded = false;
+    @Builder.Default
     private JLMapCallbackHandler jlMapCallbackHandler = new JLMapCallbackHandler();
-    public JLMapView(OnJLMapViewListener listener){
+    @Builder.Default
+    private JLProperties.MapType mapType = JLProperties.MapType.DARK;
+    @Builder.Default
+    private JLLatLng startCoordinate = JLLatLng.builder().lat(22).lng(22).build();
+
+    @Builder
+    private JLMapView(OnJLMapViewListener mapListener, JLProperties.MapType mapType, JLLatLng startCoordinate) {
         this();
-        this.setMapListener(listener);
+        this.mapListener = mapListener;
+        this.mapType = mapType;
+        this.startCoordinate = startCoordinate;
     }
 
-    public JLMapView() {
+    private JLMapView() {
+        initialize();
+    }
+
+
+
+    private void initialize() {
         webView = new WebView();
         webView.getEngine().onStatusChangedProperty().addListener((observable, oldValue, newValue) -> System.out.println(""));
         webView.getEngine().onErrorProperty().addListener((observable, oldValue, newValue) -> System.out.println(""));
@@ -58,7 +77,9 @@ public class JLMapView extends JLMapController {
         WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId)
                 -> log.debug(String.format("sid: %s ln: %d m:%s", sourceId, lineNumber, message)));
 
-        webView.getEngine().load(getClass().getResource("/index.html").toString());
+        webView.getEngine()
+                .load(getClass().getResource("/index.html").toString()
+                        + String.format("?mapid=%s",mapType.name()));
 
         setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         getChildren().add(webView);
@@ -90,12 +111,13 @@ public class JLMapView extends JLMapController {
         Transition gt = new Transition() {
             {
                 setCycleDuration(Duration.millis(2000));
+                setInterpolator(Interpolator.EASE_IN);
             }
 
             @Override
             protected void interpolate(double frac) {
                 GaussianBlur eff = ((GaussianBlur) webView.getEffect());
-                eff.setRadius(eff.getRadius() - 0.5);
+                eff.setRadius(JLProperties.START_ANIMATION_RADIUS * (1 - frac));
             }
         };
         gt.play();
@@ -104,7 +126,7 @@ public class JLMapView extends JLMapController {
     private void setBlurEffectForMap() {
         if(webView.getEffect() == null) {
             GaussianBlur gaussianBlur = new GaussianBlur();
-            gaussianBlur.setRadius(10);
+            gaussianBlur.setRadius(JLProperties.START_ANIMATION_RADIUS);
             webView.setEffect(gaussianBlur);
         }
     }
@@ -138,14 +160,7 @@ public class JLMapView extends JLMapController {
 
     @Override
     protected void addControllerToDocument() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         JSObject window = (JSObject) webView.getEngine().executeScript("window");
-
-
         if(!controllerAdded) {
             window.setMember("app", jlMapCallbackHandler);
             String functionName = "jlMapCallbackListener";
@@ -157,8 +172,7 @@ public class JLMapView extends JLMapController {
                     + "     fun.apply(this, arguments);"
                     + "}";
             System.out.println(script);
-            //webView.getEngine().executeScript("jlMapCallbackRegister");
-            System.out.println("controller added!");
+            log.debug("controller added to js scripts");
             controllerAdded = true;
         }
     }
