@@ -1,10 +1,10 @@
-package io.github.makbn.datadispersion;
+package io.github.makbn.jlmap;
 
-import io.github.makbn.datadispersion.exception.JLMapNotReadyException;
-import io.github.makbn.datadispersion.layer.JLLayer;
-import io.github.makbn.datadispersion.layer.JLUiLayer;
-import io.github.makbn.datadispersion.layer.JLVectorLayer;
-import io.github.makbn.datadispersion.model.JLLatLng;
+import io.github.makbn.jlmap.exception.JLMapNotReadyException;
+import io.github.makbn.jlmap.layer.JLLayer;
+import io.github.makbn.jlmap.layer.JLUiLayer;
+import io.github.makbn.jlmap.layer.JLVectorLayer;
+import io.github.makbn.jlmap.model.JLLatLng;
 import javafx.concurrent.Worker;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
@@ -19,11 +19,12 @@ public abstract class JLMapController extends AnchorPane {
     protected abstract HashMap<String, JLLayer> getLayers();
 
     JLMapController() {
-        System.out.println("super");
+        //do nothing
     }
 
     private JLMapController(Node... children) {
         super(children);
+        //do nothing
     }
 
     /**

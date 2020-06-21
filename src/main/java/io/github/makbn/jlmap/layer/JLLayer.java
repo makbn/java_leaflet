@@ -1,4 +1,4 @@
-package io.github.makbn.datadispersion.layer;
+package io.github.makbn.jlmap.layer;
 
 import javafx.scene.web.WebEngine;
 

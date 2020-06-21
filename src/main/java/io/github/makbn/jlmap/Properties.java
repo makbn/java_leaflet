@@ -1,4 +1,4 @@
-package io.github.makbn.datadispersion;
+package io.github.makbn.jlmap;
 
 public class Properties {
 

@@ -1,10 +1,10 @@
-package io.github.makbn.datadispersion;
+package io.github.makbn.jlmap;
 
 import com.sun.javafx.webkit.WebConsoleListener;
-import io.github.makbn.datadispersion.layer.JLLayer;
-import io.github.makbn.datadispersion.layer.JLUiLayer;
-import io.github.makbn.datadispersion.layer.JLVectorLayer;
-import io.github.makbn.datadispersion.listener.OnJLMapViewListener;
+import io.github.makbn.jlmap.layer.JLLayer;
+import io.github.makbn.jlmap.layer.JLUiLayer;
+import io.github.makbn.jlmap.layer.JLVectorLayer;
+import io.github.makbn.jlmap.listener.OnJLMapViewListener;
 import javafx.animation.Transition;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
@@ -14,18 +14,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
+import lombok.extern.log4j.Log4j2;
 import netscape.javascript.JSObject;
 
 import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 
+@Log4j2
 public class JLMapView extends JLMapController {
 
-    private final WebView webView;
+    private WebView webView;
     private OnJLMapViewListener mapListener;
     private HashMap<String, JLLayer> layers;
     private boolean controllerAdded = false;
@@ -34,9 +35,8 @@ public class JLMapView extends JLMapController {
         this();
         this.setMapListener(listener);
     }
+
     public JLMapView() {
-        System.out.println("sub");
-        // we define a regular JavaFX WebView that DukeScript can use for rendering
         webView = new WebView();
         webView.getEngine().onStatusChangedProperty().addListener((observable, oldValue, newValue) -> System.out.println(""));
         webView.getEngine().onErrorProperty().addListener((observable, oldValue, newValue) -> System.out.println(""));
@@ -55,12 +55,8 @@ public class JLMapView extends JLMapController {
                     }
                 });
 
-        WebConsoleListener.setDefaultListener(new WebConsoleListener() {
-            @Override
-            public void messageAdded(WebView webView, String message, int lineNumber, String sourceId) {
-                System.out.println(message);
-            }
-        });
+        WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId)
+                -> log.debug(String.format("sid: %s ln: %d m:%s", sourceId, lineNumber, message)));
 
         webView.getEngine().load(getClass().getResource("/index.html").toString());
 
@@ -70,22 +66,22 @@ public class JLMapView extends JLMapController {
     }
 
     private void checkForBrowsing(WebEngine engine) {
-        String toBeopen =
+        String address =
                 engine.getLoadWorker().getMessage().trim();
-        System.out.println("tobeopen: " + toBeopen);
-        if (toBeopen.contains("http://") || toBeopen.contains("https://")) {
+        log.debug("link: " + address);
+        if (address.contains("http://") || address.contains("https://")) {
             engine.getLoadWorker().cancel();
             try {
                 String os = System.getProperty("os.name", "generic");
                 if(os.toLowerCase().contains("mac")){
-                    Runtime.getRuntime().exec("open " + toBeopen);
+                    Runtime.getRuntime().exec("open " + address);
                 }else if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                    Desktop.getDesktop().browse(new URL(toBeopen).toURI());
+                    Desktop.getDesktop().browse(new URL(address).toURI());
                 }else {
-                    Runtime.getRuntime().exec("xdg-open " + toBeopen);
+                    Runtime.getRuntime().exec("xdg-open " + address);
                 }
             } catch (IOException | URISyntaxException e) {
-                e.printStackTrace();
+                log.debug(e);
             }
         }
     }

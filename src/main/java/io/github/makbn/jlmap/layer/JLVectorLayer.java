@@ -1,6 +1,6 @@
-package io.github.makbn.datadispersion.layer;
+package io.github.makbn.jlmap.layer;
 
-import io.github.makbn.datadispersion.model.*;
+import io.github.makbn.jlmap.model.*;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 

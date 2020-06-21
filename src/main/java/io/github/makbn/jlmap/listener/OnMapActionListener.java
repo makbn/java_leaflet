@@ -1,4 +1,4 @@
-package io.github.makbn.datadispersion.listener;
+package io.github.makbn.jlmap.listener;
 
 public interface OnMapActionListener {
 

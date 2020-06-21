@@ -1,9 +1,9 @@
-package io.github.makbn.datadispersion.layer;
+package io.github.makbn.jlmap.layer;
 
-import io.github.makbn.datadispersion.model.JLLatLng;
-import io.github.makbn.datadispersion.model.JLMarker;
-import io.github.makbn.datadispersion.model.JLOptions;
-import io.github.makbn.datadispersion.model.JLPopup;
+import io.github.makbn.jlmap.model.JLLatLng;
+import io.github.makbn.jlmap.model.JLMarker;
+import io.github.makbn.jlmap.model.JLOptions;
+import io.github.makbn.jlmap.model.JLPopup;
 import javafx.scene.web.WebEngine;
 
 /**

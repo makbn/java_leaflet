@@ -1,4 +1,4 @@
-package io.github.makbn.datadispersion.model;
+package io.github.makbn.jlmap.model;
 
 import lombok.*;
 
@@ -16,6 +16,6 @@ public class JLMultiPolyline {
     private int id;
     /** theming options for JLMultiPolyline. all options are not available! */
     private JLOptions options;
-    /** The array of {{@link io.github.makbn.datadispersion.model.JLLatLng}} points of JLMultiPolyline*/
+    /** The array of {{@link io.github.makbn.jlmap.model.JLLatLng}} points of JLMultiPolyline*/
     private JLLatLng[][] vertices;
 }

@@ -1,4 +1,4 @@
-package io.github.makbn.datadispersion.exception;
+package io.github.makbn.jlmap.exception;
 
 import lombok.Builder;
 

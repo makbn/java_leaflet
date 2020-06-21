@@ -5,8 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.makbn</groupId>
-    <artifactId>data-dispersion</artifactId>
+    <artifactId>jlmap</artifactId>
     <version>1.0</version>
+
+    <developers>
+        <developer>
+            <name>Mehdi Akbarian Rastaghi</name>
+            <id>makbn</id>
+            <email>mehdi74akbarian@gmail.com</email>
+        </developer>
+    </developers>
+
     <build>
         <plugins>
             <plugin>
@@ -29,9 +38,17 @@
             <version>1.18.12</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.13.3</version>
+        </dependency>
     </dependencies>
-
-
     <repositories>
         <repository>
             <id>com.teamdev</id>

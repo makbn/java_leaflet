@@ -1,6 +1,6 @@
-package io.github.makbn.datadispersion.listener;
+package io.github.makbn.jlmap.listener;
 
-import io.github.makbn.datadispersion.JLMapView;
+import io.github.makbn.jlmap.JLMapView;
 
 public interface OnJLMapViewListener {
 

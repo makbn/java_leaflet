@@ -1,9 +1,9 @@
-package io.github.makbn.datadispersion;
+package io.github.makbn.jlmap;
 
-import io.github.makbn.datadispersion.listener.OnJLMapViewListener;
-import io.github.makbn.datadispersion.model.JLLatLng;
-import io.github.makbn.datadispersion.model.JLMarker;
-import io.github.makbn.datadispersion.model.JLOptions;
+import io.github.makbn.jlmap.listener.OnJLMapViewListener;
+import io.github.makbn.jlmap.model.JLLatLng;
+import io.github.makbn.jlmap.model.JLMarker;
+import io.github.makbn.jlmap.model.JLOptions;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,7 +28,7 @@ public class Leaflet extends Application {
         final JLMapView map = new JLMapView();
 
        // BorderPane root = createBasePane();
-        ListView<Address> listView = getAddressListView(map);
+        ListView<JLLatLng> listView = getAddressListView(map);
 
         AnchorPane inside = createBasePane();
 
@@ -120,24 +120,23 @@ public class Leaflet extends Application {
                 .removeMarker(jlMarker.getId()));*/
     }
 
-    private ListView<Address> getAddressListView(JLMapView map) {
+    private ListView<JLLatLng> getAddressListView(JLMapView map) {
         // a regular JavaFX ListView
-        ListView<Address> listView = new ListView<>();
-        listView.getItems().addAll(new Address("Toni", 48.1322840, 11.5361690),
-                new Address("Jarda", 50.0284060, 14.4934400),
-                new Address("JUG Münster", 51.94906770000001, 7.613701100000071));
+        ListView<JLLatLng> listView = new ListView<>();
+        listView.getItems().addAll(new JLLatLng("Toni", 48.1322840, 11.5361690),
+                new JLLatLng("Jarda", 50.0284060, 34.4934400),
+                new JLLatLng("JUG Münster", 11.94906770000001, 7.613701100000071));
         // we listen for the selected item and update the map accordingly
         // as a demo of how to interact between JavaFX and DukeScript
-        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Address>() {
+        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<JLLatLng>() {
             @Override
-            public void changed(ObservableValue<? extends Address> ov, Address old_val, final Address new_val) {
-                String window =  map.getWebView()
-                        .getEngine()
-                        .executeScript("setLatLng("+new_val.getLat()+", "+new_val.getLng()+", 10, true)")
-                        .toString();
-                System.out.println("done: " + window);
+            public void changed(ObservableValue<? extends JLLatLng> observable, JLLatLng oldValue, JLLatLng newValue) {
+                int d = (int) (newValue.distanceTo(oldValue) / 1000000);
+                System.out.println(d);
+                map.setView(newValue, d);
             }
         });
+
         return listView;
     }
 

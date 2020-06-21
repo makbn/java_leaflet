@@ -1,6 +1,6 @@
-package io.github.makbn.datadispersion.model;
+package io.github.makbn.jlmap.model;
 
-import io.github.makbn.datadispersion.Properties;
+import io.github.makbn.jlmap.Properties;
 import lombok.*;
 
 import java.util.Objects;

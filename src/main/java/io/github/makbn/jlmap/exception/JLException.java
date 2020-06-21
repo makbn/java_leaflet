@@ -1,6 +1,4 @@
-package io.github.makbn.datadispersion.exception;
-
-import lombok.Builder;
+package io.github.makbn.jlmap.exception;
 
 /**
  * Internal JLMap application's Exception base class.

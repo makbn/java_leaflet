@@ -1,4 +1,4 @@
-package io.github.makbn.datadispersion.model;
+package io.github.makbn.jlmap.model;
 
 import javafx.scene.paint.Color;
 import lombok.AllArgsConstructor;
