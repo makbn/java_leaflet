@@ -1,5 +1,6 @@
 package io.github.makbn.jlmap.layer;
 
+import io.github.makbn.jlmap.JLMapCallbackHandler;
 import io.github.makbn.jlmap.model.JLLatLng;
 import io.github.makbn.jlmap.model.JLMarker;
 import io.github.makbn.jlmap.model.JLOptions;
@@ -12,21 +13,24 @@ import javafx.scene.web.WebEngine;
  */
 public class JLUiLayer extends JLLayer {
 
-    public JLUiLayer(WebEngine engine) {
-        super(engine);
+    public JLUiLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
+        super(engine, callbackHandler);
     }
 
     /**
      * Add a {{@link JLMarker}} to the map with given text as content and {{@link JLLatLng}} as position.
+     *
      * @param latLng position on the map.
-     * @param text content of the related popup if available!
+     * @param text   content of the related popup if available!
      * @return the instance of added {{@link JLMarker}} on the map.
      */
-    public JLMarker addMarker(JLLatLng latLng, String text){
-        String result = engine.executeScript(String.format("addMarker(%f, %f, '%s')", latLng.getLat(), latLng.getLng(), text))
+    public JLMarker addMarker(JLLatLng latLng, String text, boolean draggable) {
+        String result = engine.executeScript(String.format("addMarker(%f, %f, '%s', %b)", latLng.getLat(), latLng.getLng(), text, draggable))
                 .toString();
         int index = Integer.parseInt(result);
-        return new JLMarker(index, text, latLng);
+        JLMarker marker = new JLMarker(index, text, latLng);
+        callbackHandler.addJLObject(marker);
+        return marker;
     }
 
     /**
@@ -37,6 +41,7 @@ public class JLUiLayer extends JLLayer {
     public boolean removeMarker(int id){
         String result = engine.executeScript(String.format("removeMarker(%d)", id))
                 .toString();
+        callbackHandler.remove(JLMarker.class, id);
         return Boolean.parseBoolean(result);
     }
 
