@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Quick Start - Leaflet</title>
+    <title>Java - Leaflet</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico">
@@ -10,16 +10,87 @@
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin=""></script>
-
     <script>
-        function jlMapCallbackListener(functionName, param1, param2) {
+        function eventHandler(e, event_id) {
+            if (getJLID(e) === undefined)
+                return
+
+            if (event_id === 'click') {
+                jlMapCallbackListener('click', getJLID(e), findIndex(e), e.latlng, e.layerPoint);
+                if (onClickPopup) {
+                    popup
+                        .setLatLng(e.latlng)
+                        .setContent("You clicked the map at" + e.latlng)
+                        .openOn(jlmap);
+                }
+            } else if (['move', 'moveend', 'movestart', 'drag', 'dragstart', 'dragend'].includes(event_id)) {
+                try {
+                    let mapZoom = jlmap.getZoom();
+                    let jlId = getJLID(e);
+                    let index = findIndex(e);
+
+                    let center = index == -2 ? JSON.stringify({
+                        "lat": jlmap.getCenter().lat,
+                        "lng": jlmap.getCenter().lng
+                    }) : JSON.stringify({
+                        "lat": e.target.getLatLng().lat,
+                        "lng": e.target.getLatLng().lng
+                    });
+                    let bounds = JSON.stringify({
+                        "northEast": {
+                            "lat": jlmap.getBounds().getNorthEast().lat,
+                            "lng": jlmap.getBounds().getNorthEast().lng,
+                        },
+                        "southWest": {
+                            "lat": jlmap.getBounds().getSouthWest().lat,
+                            "lng": jlmap.getBounds().getSouthWest().lng,
+                        }
+                    });
+                    jlMapCallbackListener(event_id, jlId, index, jlmap.getZoom(), center, bounds);
+                } catch (e) {
+                    jlMapCallbackListener("error", e.message, e.messageerror);
+                }
+
+            }
+        }
+
+        function findIndex(e) {
+            let jlid = getJLID(e);
+
+            switch (jlid) {
+                case 'circle':
+                    return circles.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'circle_marker':
+                    return circleMarkers.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'polyline':
+                    return polyLines.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'polygon':
+                    return polygons.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'marker':
+                    return markers.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                default:
+                    return -2;
+            }
+        }
+
+        function jlMapCallbackListener(functionName, param1, param2, param3, param4, param5) {
             //do nothing
         }
 
+        function getJLID(e) {
+            if (e.propagatedFrom) {
+                return e.propagatedFrom.jlid;
+            } else if (e.sourceTarget) {
+                return e.sourceTarget.jlid;
+            } else if (e.target) {
+                return e.target.jlid;
+            }
+            return undefined;
+        }
+
         let fun = jlMapCallbackListener;
-        //console.log("jlMapCallbackRegister")
         jlMapCallbackListener = function () {
-            app.functionCalled(arguments[0], arguments[1], arguments[2]);
+            app.functionCalled(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
             fun.apply(this, arguments);
         }
 
@@ -55,6 +126,11 @@
     var circles = []
 
     var jlmap = L.map('mapid').setView([35.63, 51.45], 3);
+    jlmap.jlid = 'main_map';
+
+    var jlFeatureGroup = L.featureGroup()
+        .addTo(jlmap);
+
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}' +
         '?access_token=' + getAccessToken(), {
         maxZoom: 18,
@@ -72,7 +148,7 @@
             return token;
         }
 
-        return 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+        return '';
     }
 
     function mapId() {
@@ -106,17 +182,12 @@
     }
 
     var popup = L.popup();
-    jlmap.on('click', onMapClick);
+    jlmap.on('click', e => eventHandler(e, 'click'));
+    jlmap.on('move', e => eventHandler(e, 'move'));
+    jlmap.on('movestart', e => eventHandler(e, 'movestart'));
+    jlmap.on('moveend', e => eventHandler(e, 'moveend'));
 
-    function onMapClick(e) {
-        jlMapCallbackListener('click', e.latlng, e.layerPoint);
-        if (onClickPopup) {
-            popup
-                .setLatLng(e.latlng)
-                .setContent("You clicked the map at" + e.latlng)
-                .openOn(jlmap);
-        }
-    }
+    jlFeatureGroup.on("click", e => eventHandler(e, 'click'));
 
 
     function addCircleMarker(latlng, radius = 10, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
@@ -130,7 +201,9 @@
             "opacity": opacity,
             "fillOpacity": fillOpacity,
             "smoothFactor": smoothFactor
-        }).addTo(jlmap);
+        });
+        circleM.jlid = 'circle_marker';
+        circleM.addTo(jlFeatureGroup);
         let len = circleMarkers.push(circleM);
         return len - 1;
     }
@@ -156,7 +229,9 @@
             "opacity": opacity,
             "fillOpacity": fillOpacity,
             "smoothFactor": smoothFactor
-        }).addTo(jlmap);
+        });
+        circle.jlid = 'circle';
+        circle.addTo(jlFeatureGroup);
         let len = circles.push(circle);
         return len - 1;
 
@@ -183,7 +258,9 @@
             "opacity": opacity,
             "fillOpacity": fillOpacity,
             "smoothFactor": smoothFactor
-        }).addTo(jlmap);
+        });
+        polygon.jlid = 'polygon';
+        polygon.addTo(jlFeatureGroup);
         let len = polygons.push(polygon);
         return len - 1;
     }
@@ -205,7 +282,9 @@
             "weight": weight,
             "opacity": opacity,
             "smoothFactor": smoothFactor
-        }).addTo(jlmap);
+        });
+        polyline.jlid = 'polyline';
+        polyline.addTo(jlFeatureGroup);
 
         let len = polyLines.push(polyline);
         return len - 1;
@@ -235,8 +314,8 @@
             "closeButton": closeButton,
             "autoClose": autoClose
         }).setLatLng([lat, lng])
-            .setContent(text)
-            .openOn(jlmap);
+            .setContent(text);
+        newPopup.openOn(jlmap);
         let len = popups.push(newPopup);
         return len - 1;
     }
@@ -256,11 +335,21 @@
         document.getElementsByClassName('leaflet-control-attribution')[0].remove()
     }
 
-    function addMarker(lat, lng, text) {
-        let marker = L.marker([lat, lng]);
+    function addMarker(lat, lng, text, draggable = false) {
+        let marker = L.marker([lat, lng],
+            {
+                "draggable": draggable
+            });
         let len = markers.push(marker);
 
-        marker.addTo(jlmap);
+        marker.jlid = 'marker';
+
+        marker.on('move', e => eventHandler(e, 'move'));
+        marker.on('moveend', e => eventHandler(e, 'moveend'));
+        marker.on('drag', e => eventHandler(e, 'drag'));
+        marker.on('movestart', e => eventHandler(e, 'movestart'));
+
+        marker.addTo(jlFeatureGroup);
         if (text) {
             marker.bindPopup(text)
                 .openPopup();
