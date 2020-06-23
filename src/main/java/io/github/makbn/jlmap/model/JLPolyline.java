@@ -11,11 +11,17 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class JLPolyline {
-    /** id of JLPolyline! this is an internal id for JLMap Application and not related to Leaflet! */
+public class JLPolyline extends JLObject<JLPolyline> {
+    /**
+     * id of JLPolyline! this is an internal id for JLMap Application and not related to Leaflet!
+     */
     private int id;
-    /** theming options for JLPolyline. all options are not available! */
+    /**
+     * theming options for JLPolyline. all options are not available!
+     */
     private JLOptions options;
-    /** The array of {{@link io.github.makbn.jlmap.model.JLLatLng}} points of JLPolyline*/
+    /**
+     * The array of {{@link io.github.makbn.jlmap.model.JLLatLng}} points of JLPolyline
+     */
     private JLLatLng[] vertices;
 }

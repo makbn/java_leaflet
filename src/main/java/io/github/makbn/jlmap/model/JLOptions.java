@@ -63,4 +63,8 @@ public class JLOptions {
     /** Set it to false if you want to override the default behavior of the popup closing when another popup is opened. */
     private boolean autoClose = true;
 
+    @Builder.Default
+    /** Whether the marker is draggable with mouse/touch or not. */
+    private boolean draggable = false;
+
 }
