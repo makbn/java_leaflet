@@ -12,11 +12,28 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class JLMarker implements JLPath{
-    /** id of object! this is an internal id for JLMap Application and not related to Leaflet! */
+public class JLMarker extends JLObject<JLMarker> {
+    /**
+     * id of object! this is an internal id for JLMap Application and not related to Leaflet!
+     */
     protected int id;
-    /** optional text for showing on created JLMarker tooltip. */
+    /**
+     * optional text for showing on created JLMarker tooltip.
+     */
     private String text;
-    /** Coordinates of the JLMarker on the map */
+    /**
+     * Coordinates of the JLMarker on the map
+     */
     private JLLatLng latLng;
+
+
+    @Override
+    public void update(Object... params) {
+        super.update(params);
+        if (params != null && params.length > 0) {
+            if (String.valueOf(params[0]).equals("moveend") && params[1] != null) {
+                latLng = (JLLatLng) params[1];
+            }
+        }
+    }
 }

@@ -13,13 +13,18 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class JLPolygon  {
-    /** id of JLPolygon! this is an internal id for JLMap Application and not related to Leaflet! */
+public class JLPolygon extends JLObject<JLPolygon> {
+    /**
+     * id of JLPolygon! this is an internal id for JLMap Application and not related to Leaflet!
+     */
     private int id;
-    /** theming options for JLMultiPolyline. all options are not available! */
+    /**
+     * theming options for JLMultiPolyline. all options are not available!
+     */
     private JLOptions options;
 
-    /** The arrays of latlngs, with the first array representing the outer shape and the other arrays representing
+    /**
+     * The arrays of latlngs, with the first array representing the outer shape and the other arrays representing
      * holes in the outer shape. Additionally, you can pass a multi-dimensional array to represent a MultiPolygon shape.
      */
     private JLLatLng[][][] vertices;
