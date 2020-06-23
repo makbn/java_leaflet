@@ -6,12 +6,15 @@ import io.github.makbn.jlmap.layer.JLUiLayer;
 import io.github.makbn.jlmap.layer.JLVectorLayer;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
 import io.github.makbn.jlmap.model.JLLatLng;
+import io.github.makbn.jlmap.model.JLMapOption;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -36,31 +39,29 @@ public class JLMapView extends JLMapController {
     private OnJLMapViewListener mapListener;
     private HashMap<String, JLLayer> layers;
     private boolean controllerAdded = false;
-    @Builder.Default
-    private JLMapCallbackHandler jlMapCallbackHandler = new JLMapCallbackHandler();
-    @Builder.Default
-    private JLProperties.MapType mapType = JLProperties.MapType.DARK;
-    @Builder.Default
-    private JLLatLng startCoordinate = JLLatLng.builder().lat(22).lng(22).build();
+    private JLMapCallbackHandler jlMapCallbackHandler;
 
     @Builder
-    private JLMapView(OnJLMapViewListener mapListener, JLProperties.MapType mapType, JLLatLng startCoordinate) {
+    private JLMapView(OnJLMapViewListener mapListener, JLProperties.MapType mapType, JLLatLng startCoordinate, String accessToken) {
+        super(JLMapOption.builder()
+                .startCoordinate(startCoordinate)
+                .mapType(mapType)
+                .accessToken(accessToken)
+                .build());
         this.mapListener = mapListener;
-        this.mapType = mapType;
-        this.startCoordinate = startCoordinate;
         initialize();
     }
 
     private void initialize() {
         webView = new WebView();
-        webView.getEngine().onStatusChangedProperty().addListener((observable, oldValue, newValue) -> System.out.println(""));
-        webView.getEngine().onErrorProperty().addListener((observable, oldValue, newValue) -> System.out.println(""));
+        webView.getEngine().onStatusChangedProperty().addListener((observable, oldValue, newValue) -> System.out.println());
+        webView.getEngine().onErrorProperty().addListener((observable, oldValue, newValue) -> System.out.println());
         webView.getEngine().getLoadWorker().stateProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     checkForBrowsing(webView.getEngine());
-                    if(newValue == Worker.State.FAILED){
+                    if (newValue == Worker.State.FAILED) {
                         System.out.println("failed");
-                    } else if( newValue == Worker.State.SUCCEEDED) {
+                    } else if (newValue == Worker.State.SUCCEEDED) {
                         removeMapBlur();
                         webView.getEngine().executeScript("removeNativeAttr()");
                         addControllerToDocument();
@@ -71,15 +72,23 @@ public class JLMapView extends JLMapController {
                 });
 
         WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId)
-                -> log.debug(String.format("sid: %s ln: %d m:%s", sourceId, lineNumber, message)));
-
+                -> log.error(String.format("sid: %s ln: %d m:%s", sourceId, lineNumber, message)));
+        jlMapCallbackHandler = new JLMapCallbackHandler(this);
         webView.getEngine()
                 .load(getClass().getResource("/index.html").toString()
-                        + String.format("?mapid=%s",mapType.name()));
+                        + getMapOptions());
 
         setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         getChildren().add(webView);
         customizeWebviewStyles();
+    }
+
+    private String getMapOptions() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("?mapid=%s", mapOption.getMapType().name()));
+        sb.append(String.format("&access_token=%s", mapOption.getAccessToken()));
+
+        return sb.toString();
     }
 
     private void checkForBrowsing(WebEngine engine) {
@@ -90,7 +99,7 @@ public class JLMapView extends JLMapController {
             engine.getLoadWorker().cancel();
             try {
                 String os = System.getProperty("os.name", "generic");
-                if(os.toLowerCase().contains("mac")){
+                if (os.toLowerCase().contains("mac")) {
                     Runtime.getRuntime().exec("open " + address);
                 }else if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     Desktop.getDesktop().browse(new URL(address).toURI());
@@ -146,10 +155,12 @@ public class JLMapView extends JLMapController {
 
     @Override
     protected HashMap<String, JLLayer> getLayers() {
-        if(layers == null){
+        if(layers == null) {
             layers = new HashMap<>();
-            layers.put(JLUiLayer.class.getSimpleName(),new JLUiLayer(getWebView().getEngine()));
-            layers.put(JLVectorLayer.class.getSimpleName(),new JLVectorLayer(getWebView().getEngine()));
+            layers.put(JLUiLayer.class.getSimpleName(),
+                    new JLUiLayer(getWebView().getEngine(), jlMapCallbackHandler));
+            layers.put(JLVectorLayer.class.getSimpleName(),
+                    new JLVectorLayer(getWebView().getEngine(), jlMapCallbackHandler));
         }
         return layers;
     }
@@ -159,15 +170,6 @@ public class JLMapView extends JLMapController {
         JSObject window = (JSObject) webView.getEngine().executeScript("window");
         if(!controllerAdded) {
             window.setMember("app", jlMapCallbackHandler);
-            String functionName = "jlMapCallbackListener";
-            String script = "var fun = " + functionName + " ;"
-                    + functionName + " = function() {"
-                    + "     console.log('start adding'); "
-                    + "     app.functionCalled('" + functionName + "', arguments[0], arguments[1]);"
-                    + "     console.log('added');"
-                    + "     fun.apply(this, arguments);"
-                    + "}";
-            System.out.println(script);
             log.debug("controller added to js scripts");
             controllerAdded = true;
         }

@@ -5,6 +5,7 @@ import io.github.makbn.jlmap.layer.JLLayer;
 import io.github.makbn.jlmap.layer.JLUiLayer;
 import io.github.makbn.jlmap.layer.JLVectorLayer;
 import io.github.makbn.jlmap.model.JLLatLng;
+import io.github.makbn.jlmap.model.JLMapOption;
 import javafx.concurrent.Worker;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
@@ -15,14 +16,24 @@ import java.util.HashMap;
 /**
  * by: Mehdi Akbarian Rastaghi (@makbn)
  */
-public abstract class JLMapController extends AnchorPane {
+abstract class JLMapController extends AnchorPane {
 
     protected abstract WebView getWebView();
+
     protected abstract void addControllerToDocument();
+
     protected abstract HashMap<String, JLLayer> getLayers();
 
-    JLMapController() {
-        //do nothing
+    protected JLMapOption mapOption;
+
+    JLMapController(JLMapOption mapOption) {
+        this.mapOption = JLMapOption.builder().build();
+        if (mapOption.getMapType() != null)
+            this.mapOption.setMapType(mapOption.getMapType());
+        if (mapOption.getStartCoordinate() != null)
+            this.mapOption.setStartCoordinate(mapOption.getStartCoordinate());
+        if (mapOption.getAccessToken() != null)
+            this.mapOption.setAccessToken(mapOption.getAccessToken());
     }
 
     private JLMapController(Node... children) {
