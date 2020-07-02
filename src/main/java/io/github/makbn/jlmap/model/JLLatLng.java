@@ -15,8 +15,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 public class JLLatLng {
-    /** optional name for given latitude and longitude */
-    private final String name;
     /** geographical given latitude in degrees */
     private final double lat;
     /** geographical given longitude in degrees */
@@ -72,6 +70,6 @@ public class JLLatLng {
 
     @Override
     public int hashCode() {
-        return Objects.hash(lat, lng, name);
+        return Objects.hash(lat, lng);
     }
 }
