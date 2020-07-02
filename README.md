@@ -113,7 +113,7 @@ map.getVectorLayer()
         );
 ``` 
 
-### Styling the objects
+### Styling
 
 You can pass `JLOptions` to each method for changing the default style! 
 
@@ -130,13 +130,23 @@ You can pass `JLOptions` to each method for changing the default style!
         );
 ```
 
+For the map itself, you can choose between these themes:
+
+* `LIGHT` for mapbox/light-v10
+* `DARK` for mapbox/dark-v10
+* `OUTDOOR` for mapbox/outdoors-v11
+* `SATELLITE` for mapbox/satellite-v9
+* `SATELLITE_STREET` for mapbox/satellite-streets-v11
+* `STREET` for mapbox/streets-v11
+
 
 ## TODO
 
-[ ] Adding GeoJson Support
-[ ] Adding SVG support
-[ ] Adding animation support
-[ ] Separating JS and HTML
+- [ ] Adding GeoJson Support
+- [ ] Adding SVG support
+- [ ] Adding animation support
+- [ ] Separating JS and HTML
 
-Disclaimer: I've implemented this project for one of my academic paper in the area of geo-visualization. So, im not contributing on this project actively! One more thing, I'm not a Javascript developer!
+**Disclaimer**: I've implemented this project for one of my academic paper in the area of geo-visualization. So, im not contributing on this project actively! One more thing, I'm not a Javascript developer!
+
 
