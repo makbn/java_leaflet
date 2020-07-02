@@ -11,7 +11,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -19,16 +18,16 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class Leaflet extends Application {
-    private final String ACCESS_TOKEN = "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw";
+        private final String ACCESS_TOKEN = "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw";
     @Override
     public void start(Stage stage) {
 
-        stage.initStyle(StageStyle.TRANSPARENT);
-
+        //stage.initStyle(StageStyle.TRANSPARENT);
+        System.out.println("hi");
         //building a new map view
         final JLMapView map = JLMapView
                 .builder()
-                .mapType(JLProperties.MapType.DARK)
+                .mapType(JLProperties.MapType.LIGHT)
                 .accessToken(ACCESS_TOKEN)
                 .startCoordinate(JLLatLng.builder()
                         .lat(43.54)
@@ -37,15 +36,15 @@ public class Leaflet extends Application {
                 .build();
 
         //creating a window
-        AnchorPane inside = createBasePane();
-        AnchorPane root = new AnchorPane(inside);
+        //AnchorPane inside = createBasePane();
+        AnchorPane root = new AnchorPane(map);
         root.setBackground(Background.EMPTY);
         root.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
         root.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
         Scene scene = new Scene(root);
 
         //adding map to window
-        inside.getChildren().add(map);
+        //inside.getChildren().add(map);
 
         stage.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
         stage.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
@@ -70,12 +69,10 @@ public class Leaflet extends Application {
                         .lng(10)
                         .lat(10)
                         .build());
-
                 map.getUiLayer()
                         .addMarker(JLLatLng.builder()
                                 .lat(35.63)
                                 .lng(51.45)
-                                .name("tehran")
                                 .build(), "tehran", true)
                         .setOnActionListener(getListener());
 
@@ -83,14 +80,14 @@ public class Leaflet extends Application {
                         .addCircleMarker(JLLatLng.builder()
                                 .lat(35.63)
                                 .lng(40.45)
-                                .name("sari")
                                 .build());
 
                 map.getVectorLayer()
                         .addCircle(JLLatLng.builder()
                                 .lat(35.63)
                                 .lng(51.45)
-                                .name("tehran").build(), 30000, JLOptions.DEFAULT);
+                                .build(), 30000, JLOptions.DEFAULT);
+
             }
 
             @Override
@@ -126,15 +123,15 @@ public class Leaflet extends Application {
         JLLatLng[][] verticesT = new JLLatLng[2][];
 
         verticesT[0] = new JLLatLng[]{
-                new JLLatLng("v1", 41.509, 20.08),
-                new JLLatLng("v2", 31.503, -10.06),
-                new JLLatLng("v3", 21.51, -0.047)
+                new JLLatLng(41.509, 20.08),
+                new JLLatLng(31.503, -10.06),
+                new JLLatLng(21.51, -0.047)
         };
 
         verticesT[1] = new JLLatLng[]{
-                new JLLatLng("v1", 51.509, 10.08),
-                new JLLatLng("v2", 55.503, 15.06),
-                new JLLatLng("v3", 42.51, 20.047)
+                new JLLatLng(51.509, 10.08),
+                new JLLatLng(55.503, 15.06),
+                new JLLatLng(42.51, 20.047)
         };
 
         map.getVectorLayer().addMultiPolyline(verticesT);
@@ -142,9 +139,9 @@ public class Leaflet extends Application {
 
     private void addPolyline(JLMapView map) {
         JLLatLng[] vertices = new JLLatLng[]{
-                new JLLatLng("v1", 51.509, -0.08),
-                new JLLatLng("v2", 51.503, -0.06),
-                new JLLatLng("v3", 51.51, -0.047)
+                new JLLatLng(51.509, -0.08),
+                new JLLatLng(51.503, -0.06),
+                new JLLatLng(51.51, -0.047)
         };
 
         map.getVectorLayer().addPolyline(vertices);
@@ -158,24 +155,24 @@ public class Leaflet extends Application {
         vertices[1] = new JLLatLng[1][];
         //first part
         vertices[0][0] = new JLLatLng[]{
-                new JLLatLng(null, 37, -109.05),
-                new JLLatLng(null, 41, -109.03),
-                new JLLatLng(null, 41, -102.05),
-                new JLLatLng(null, 37, -102.04)
+                new JLLatLng(37, -109.05),
+                new JLLatLng(41, -109.03),
+                new JLLatLng(41, -102.05),
+                new JLLatLng(37, -102.04)
         };
         //hole inside the first part
         vertices[0][1] = new JLLatLng[]{
-                new JLLatLng(null, 37.29, -108.58),
-                new JLLatLng(null, 40.71, -108.58),
-                new JLLatLng(null, 40.71, -102.50),
-                new JLLatLng(null, 37.29, -102.50)
+                new JLLatLng(37.29, -108.58),
+                new JLLatLng(40.71, -108.58),
+                new JLLatLng(40.71, -102.50),
+                new JLLatLng(37.29, -102.50)
         };
         //second part
         vertices[1][0] = new JLLatLng[]{
-                new JLLatLng(null, 41, -111.03),
-                new JLLatLng(null, 45, -111.04),
-                new JLLatLng(null, 45, -104.05),
-                new JLLatLng(null, 41, -104.05)
+                new JLLatLng(41, -111.03),
+                new JLLatLng(45, -111.04),
+                new JLLatLng(45, -104.05),
+                new JLLatLng(41, -104.05)
         };
         map.getVectorLayer().addPolygon(vertices).setOnActionListener(new OnJLObjectActionListener<JLPolygon>() {
             @Override
