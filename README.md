@@ -146,7 +146,8 @@ For the map itself, you can choose between these themes:
 - [ ] Adding SVG support
 - [ ] Adding animation support
 - [ ] Separating JS and HTML
+- [ ] Publishing package on Github
 
-**Disclaimer**: I've implemented this project for one of my academic paper in the area of geo-visualization. So, im not contributing on this project actively! One more thing, I'm not a Javascript developer!
+**Disclaimer**: I've implemented this project for one of my academic paper in the area of geo-visualization. So, im not contributing actively! One more thing, I'm not a Javascript developer!
 
 
