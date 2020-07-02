@@ -3,3 +3,5 @@ out
 .idea
 *.iml
 application.properties
+/src/main/java/META-INF/
+/src/main/java/io/github/makbn/jlmap/META-INF/
