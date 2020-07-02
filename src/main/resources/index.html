@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin="">
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin=""></script>
@@ -125,6 +127,15 @@
     var polygons = []
     var circles = []
 
+    var colors = [
+        '#9ecae1',
+        '#6baed6',
+        '#4292c6',
+        '#2171b5',
+        '#08519c',
+        '#08306b'
+    ];
+
     var jlmap = L.map('mapid').setView([35.63, 51.45], 3);
     jlmap.jlid = 'main_map';
 
@@ -141,10 +152,39 @@
     }).addTo(jlmap);
 
 
+    function addGeoJson(data) {
+        geojson = L.geoJson(data, {style: style}).addTo(jlmap);
+        //based on property
+        geojson.eachLayer(function (layer) {
+            layer.bindPopup("Country: " + layer.feature.properties.name + "\n Count: " + layer.feature.properties.student_count);
+        });
+    }
+
+    //style sample
+    function style(feature) {
+        return {
+            fillColor: getColor(feature.properties.student_count),
+            weight: 0,
+            opacity: 1,
+            color: 'blue',
+            fillOpacity: 0.7
+        };
+    }
+
+    //color sample
+    function getColor(d) {
+        return d > 200 ? colors[5] :
+            d > 100 ? colors[4] :
+                d > 50 ? colors[3] :
+                    d > 20 ? colors[2] :
+                        d > 10 ? colors[1] : colors[0];
+    }
+
+
     function getAccessToken() {
         let token = urlParams.get('access_token')
 
-        if(token){
+        if (token) {
             return token;
         }
 
@@ -155,16 +195,28 @@
         let mapid = urlParams.get('mapid');
         switch (mapid) {
             case 'STREET':
+                document.getElementsByTagName('body')[0].style.backgroundColor = '#75cff1';
+                document.getElementById('mapid').style.backgroundColor = '#75cff1';
                 return 'mapbox/streets-v11'
             case 'LIGHT':
+                document.getElementsByTagName('body')[0].style.backgroundColor = '#cbd2d3';
+                document.getElementById('mapid').style.backgroundColor = '#cbd2d3';
                 return 'mapbox/light-v10';
             case 'OUTDOOR':
+                document.getElementsByTagName('body')[0].style.backgroundColor = '#75cff1';
+                document.getElementById('mapid').style.backgroundColor = '#75cff1';
                 return 'mapbox/outdoors-v11';
             case 'SATELLITE':
+                document.getElementsByTagName('body')[0].style.backgroundColor = '#02060a';
+                document.getElementById('mapid').style.backgroundColor = '#02060a';
                 return 'mapbox/satellite-v9';
             case 'SATELLITE_STREET':
+                document.getElementsByTagName('body')[0].style.backgroundColor = '#02060a';
+                document.getElementById('mapid').style.backgroundColor = '#02060a';
                 return 'mapbox/satellite-streets-v11';
             default:
+                document.getElementsByTagName('body')[0].style.backgroundColor = '#191a1a';
+                document.getElementById('mapid').style.backgroundColor = '#191a1a';
                 return 'mapbox/dark-v10';
         }
     }
@@ -174,9 +226,6 @@
         svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
         svgElement.setAttribute('viewBox', viewBox /*"0 0 200 200"*/);
         svgElement.innerHTML = innerHTML;
-        //'<rect width="200" height="200"/><rect x="75" y="23" width="50" height="50" style="fill:red"/><rect x="75" y="123" width="50" height="50" style="fill:#0013ff"/>';
-
-        // var svgElementBounds = [ [ 35.63, 51.45 ], [ 13, -100 ] ];
         L.svgOverlay(svgElement, svgElementBounds)
             .addTo(jlmap);
     }
@@ -188,7 +237,6 @@
     jlmap.on('moveend', e => eventHandler(e, 'moveend'));
 
     jlFeatureGroup.on("click", e => eventHandler(e, 'click'));
-
 
     function addCircleMarker(latlng, radius = 10, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
         var circleM = L.circleMarker(latlng, {
@@ -366,7 +414,6 @@
         jlmap.removeLayer(marker)
         return true;
     }
-
 </script>
 </body>
 </html>
