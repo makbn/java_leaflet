@@ -7,7 +7,7 @@ public class JLProperties {
 
     public final static int INIT_MIN_WIDTH = 1024;
     public final static int INIT_MIN_HEIGHT = 576;
-    public final static int NORMAL_MARGIN = 12;
+    public final static int NORMAL_MARGIN = 0;
     public final static int EARTH_RADIUS = 6371;
     public final static int DEFAULT_CIRCLE_RADIUS = 200;
     public final static int DEFAULT_CIRCLE_MARKER_RADIUS = 10;
@@ -22,7 +22,7 @@ public class JLProperties {
         SATELLITE("mapbox/satellite-v9"), SATELLITE_STREET("mapbox/satellite-streets-v11"),
         STREET("mapbox/streets-v11");
 
-        private String value;
+        private final String value;
 
         MapType(String value) {
             this.value = value;

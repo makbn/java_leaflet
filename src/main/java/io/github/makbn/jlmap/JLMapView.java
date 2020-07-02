@@ -24,10 +24,12 @@ import lombok.extern.log4j.Log4j2;
 import netscape.javascript.JSObject;
 
 import java.awt.*;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * by: Mehdi Akbarian Rastaghi (@makbn)
@@ -74,9 +76,20 @@ public class JLMapView extends JLMapController {
         WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId)
                 -> log.error(String.format("sid: %s ln: %d m:%s", sourceId, lineNumber, message)));
         jlMapCallbackHandler = new JLMapCallbackHandler(this);
+
+        InputStream in = getClass().getResourceAsStream("/index.html");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        File index = null;
+        try {
+            index = File.createTempFile("jlmapindex", ".html");
+            Files.write(index.toPath(), reader.lines().collect(Collectors.joining("\n")).getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         webView.getEngine()
-                .load(getClass().getResource("/index.html").toString()
-                        + getMapOptions());
+                .load("file:" + index.getAbsolutePath() + getMapOptions());
 
         setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         getChildren().add(webView);

@@ -130,8 +130,8 @@ public class JLBounds {
         double widthBuffer = Math.abs(southWest.getLng() - northEast.getLng()) * bufferRatio;
 
         return new JLBounds(
-                new JLLatLng(null, southWest.getLat() - heightBuffer, southWest.getLng() - widthBuffer),
-                new JLLatLng(null, northEast.getLat() + heightBuffer, northEast.getLng() + widthBuffer));
+                new JLLatLng(southWest.getLat() - heightBuffer, southWest.getLng() - widthBuffer),
+                new JLLatLng(northEast.getLat() + heightBuffer, northEast.getLng() + widthBuffer));
     }
 
     /**
