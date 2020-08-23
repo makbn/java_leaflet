@@ -4,6 +4,7 @@ Java wrapper for Leaflet, JavaScript library for mobile-friendly interactive map
 *  Current version: **v1.6.0**
 
 ![Java-Leaflet Test](http://tilin.ir/gnjlRNk)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakbn%2Fjava_leaflet.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakbn%2Fjava_leaflet?ref=badge_shield)
 
 > Leaflet is the leading open-source JavaScript library for mobile-friendly interactive maps. Weighing just about 38 KB of JS, it has all the mapping features most > developers ever need.
 > Leaflet is designed with simplicity, performance and usability in mind. It works efficiently across all major desktop and mobile platforms, can be extended with > lots of plugins, has a beautiful, easy to use and well-documented API and a simple, readable source code that is a joy to contribute to.
@@ -153,3 +154,7 @@ For the map itself, you can choose between these themes:
 **Disclaimer**: I've implemented this project for one of my academic paper in the area of geo-visualization. So, im not contributing actively! One more thing, I'm not a Javascript developer!
 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakbn%2Fjava_leaflet.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakbn%2Fjava_leaflet?ref=badge_large)
