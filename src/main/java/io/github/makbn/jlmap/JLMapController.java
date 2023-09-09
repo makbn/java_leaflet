@@ -1,45 +1,34 @@
 package io.github.makbn.jlmap;
 
 import io.github.makbn.jlmap.exception.JLMapNotReadyException;
-import io.github.makbn.jlmap.layer.JLLayer;
-import io.github.makbn.jlmap.layer.JLUiLayer;
-import io.github.makbn.jlmap.layer.JLVectorLayer;
+import io.github.makbn.jlmap.layer.*;
 import io.github.makbn.jlmap.model.JLLatLng;
 import io.github.makbn.jlmap.model.JLMapOption;
 import javafx.concurrent.Worker;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
 
 import java.util.HashMap;
 
 /**
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
+@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 abstract class JLMapController extends AnchorPane {
+    JLMapOption mapOption;
+
+    JLMapController(@NonNull JLMapOption mapOption) {
+        this.mapOption = mapOption;
+    }
 
     protected abstract WebView getWebView();
 
     protected abstract void addControllerToDocument();
 
-    protected abstract HashMap<String, JLLayer> getLayers();
-
-    protected JLMapOption mapOption;
-
-    JLMapController(JLMapOption mapOption) {
-        this.mapOption = JLMapOption.builder().build();
-        if (mapOption.getMapType() != null)
-            this.mapOption.setMapType(mapOption.getMapType());
-        if (mapOption.getStartCoordinate() != null)
-            this.mapOption.setStartCoordinate(mapOption.getStartCoordinate());
-        if (mapOption.getAccessToken() != null)
-            this.mapOption.setAccessToken(mapOption.getAccessToken());
-    }
-
-    private JLMapController(Node... children) {
-        super(children);
-        //do nothing
-    }
+    protected abstract HashMap<Class<? extends JLLayer>, JLLayer> getLayers();
 
     /**
      * handle all functions for add/remove layers from UI layer
@@ -47,7 +36,7 @@ abstract class JLMapController extends AnchorPane {
      */
     public JLUiLayer getUiLayer(){
         checkMapState();
-        return (JLUiLayer) getLayers().get(JLUiLayer.class.getSimpleName());
+        return (JLUiLayer) getLayers().get(JLUiLayer.class);
     }
 
     /**
@@ -56,7 +45,17 @@ abstract class JLMapController extends AnchorPane {
      */
     public JLVectorLayer getVectorLayer(){
         checkMapState();
-        return (JLVectorLayer) getLayers().get(JLVectorLayer.class.getSimpleName());
+        return (JLVectorLayer) getLayers().get(JLVectorLayer.class);
+    }
+
+    public JLControlLayer getControlLayer() {
+        checkMapState();
+        return (JLControlLayer) getLayers().get(JLControlLayer.class);
+    }
+
+    public JLGeoJsonLayer getGeoJsonLayer() {
+        checkMapState();
+        return (JLGeoJsonLayer) getLayers().get(JLGeoJsonLayer.class);
     }
 
     /**
