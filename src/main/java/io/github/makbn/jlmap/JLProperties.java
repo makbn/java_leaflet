@@ -20,7 +20,6 @@ public class JLProperties {
     public static final int INIT_MIN_HEIGHT_STAGE = INIT_MIN_HEIGHT;
     public static final double START_ANIMATION_RADIUS = 10;
 
-    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
     public record MapType(String name, Set<JLMapOption.Parameter> parameters) {
 
         public MapType(String name) {
