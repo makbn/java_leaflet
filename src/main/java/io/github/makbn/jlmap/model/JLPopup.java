@@ -4,7 +4,7 @@ import lombok.*;
 
 /**
  * Used to open popups in certain places of the map.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter
