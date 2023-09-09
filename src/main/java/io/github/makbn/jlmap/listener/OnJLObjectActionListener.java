@@ -3,7 +3,7 @@ package io.github.makbn.jlmap.listener;
 import io.github.makbn.jlmap.model.JLObject;
 
 
-public abstract class OnJLObjectActionListener<T extends JLObject> {
+public abstract class OnJLObjectActionListener<T extends JLObject<?>> {
 
     public abstract void click(T t, Action action);
 
