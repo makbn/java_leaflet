@@ -1,4 +1,4 @@
-apackage io.github.makbn.jlmap.model;
+package io.github.makbn.jlmap.model;
 
 import org.junit.jupiter.api.Test;
 
