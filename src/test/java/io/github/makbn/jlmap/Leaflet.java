@@ -1,8 +1,16 @@
 package io.github.makbn.jlmap;
 
+import io.github.makbn.jlmap.geojson.JLGeoJsonObject;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
 import io.github.makbn.jlmap.listener.OnJLObjectActionListener;
-import io.github.makbn.jlmap.model.*;
+import io.github.makbn.jlmap.listener.event.ClickEvent;
+import io.github.makbn.jlmap.listener.event.Event;
+import io.github.makbn.jlmap.listener.event.MoveEvent;
+import io.github.makbn.jlmap.listener.event.ZoomEvent;
+import io.github.makbn.jlmap.model.JLLatLng;
+import io.github.makbn.jlmap.model.JLMarker;
+import io.github.makbn.jlmap.model.JLOptions;
+import io.github.makbn.jlmap.model.JLPolygon;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -11,40 +19,35 @@ import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import lombok.extern.log4j.Log4j2;
+import lombok.NonNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
-@Log4j2
 public class Leaflet extends Application {
-        private final String ACCESS_TOKEN = "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw";
+    static final Logger log = LogManager.getLogger(Leaflet.class);
+
     @Override
     public void start(Stage stage) {
-
-        //stage.initStyle(StageStyle.TRANSPARENT);
-        System.out.println("hi");
         //building a new map view
         final JLMapView map = JLMapView
                 .builder()
-                .mapType(JLProperties.MapType.LIGHT)
-                .accessToken(ACCESS_TOKEN)
+                .mapType(JLProperties.MapType.OSM_MAPNIK)
+                .showZoomController(true)
                 .startCoordinate(JLLatLng.builder()
-                        .lat(43.54)
-                        .lng(22.54)
+                        .lat(51.044)
+                        .lng(114.07)
                         .build())
                 .build();
-
         //creating a window
-        //AnchorPane inside = createBasePane();
         AnchorPane root = new AnchorPane(map);
         root.setBackground(Background.EMPTY);
         root.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
         root.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
         Scene scene = new Scene(root);
-
-        //adding map to window
-        //inside.getChildren().add(map);
 
         stage.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
         stage.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
@@ -60,7 +63,8 @@ public class Leaflet extends Application {
         //set listener fo map events
         map.setMapListener(new OnJLMapViewListener() {
             @Override
-            public void mapLoadedSuccessfully(JLMapView mapView) {
+            public void mapLoadedSuccessfully(@NonNull JLMapView mapView) {
+                log.info("map loaded!");
                 addMultiPolyline(map);
                 addPolyline(map);
                 addPolygon(map);
@@ -73,7 +77,7 @@ public class Leaflet extends Application {
                         .addMarker(JLLatLng.builder()
                                 .lat(35.63)
                                 .lng(51.45)
-                                .build(), "tehran", true)
+                                .build(), "Tehran", true)
                         .setOnActionListener(getListener());
 
                 map.getVectorLayer()
@@ -88,6 +92,10 @@ public class Leaflet extends Application {
                                 .lng(51.45)
                                 .build(), 30000, JLOptions.DEFAULT);
 
+
+                JLGeoJsonObject geoJsonObject = map.getGeoJsonLayer()
+                        .addFromUrl("https://pkgstore.datahub.io/examples/geojson-tutorial/example/data/db696b3bf628d9a273ca9907adcea5c9/example.geojson");
+
             }
 
             @Override
@@ -96,10 +104,19 @@ public class Leaflet extends Application {
             }
 
             @Override
-            public void onMove(Action action, JLLatLng center, JLBounds bounds, int zoomLevel) {
-                super.onMove(action, center, bounds, zoomLevel);
+            public void onAction(Event event) {
+                if (event instanceof MoveEvent moveEvent) {
+                    log.info("move event: " + moveEvent.action() + " c:" + moveEvent.center()
+                            + " \t bounds:" + moveEvent.bounds() + "\t z:" + moveEvent.zoomLevel());
+                } else if (event instanceof ClickEvent clickEvent) {
+                    log.info("click event: " + clickEvent.center());
+                    map.getUiLayer().addPopup(clickEvent.center(), "New Click Event!", JLOptions.builder()
+                            .closeButton(false)
+                            .autoClose(false).build());
+                } else if (event instanceof ZoomEvent zoomEvent) {
+                    log.info("zoom event: " + zoomEvent.zoomLevel());
+                }
 
-                System.out.println("map on move: " + action + " c:" + center + " \t bounds:" + bounds + "\t z:" + zoomLevel);
 
             }
         });
@@ -109,12 +126,12 @@ public class Leaflet extends Application {
         return new OnJLObjectActionListener<JLMarker>() {
             @Override
             public void click(JLMarker object, Action action) {
-                System.out.println("object click listener for marker:" + object);
+                log.info("object click listener for marker:" + object);
             }
 
             @Override
             public void move(JLMarker object, Action action) {
-                System.out.println("object move listener for marker:" + object);
+                log.info("object move listener for marker:" + object);
             }
         };
     }
@@ -177,26 +194,13 @@ public class Leaflet extends Application {
         map.getVectorLayer().addPolygon(vertices).setOnActionListener(new OnJLObjectActionListener<JLPolygon>() {
             @Override
             public void click(JLPolygon jlPolygon, Action action) {
-                System.out.println("object click listener for jlPolygon:" + jlPolygon);
+                log.info("object click listener for jlPolygon:" + jlPolygon);
             }
 
             @Override
             public void move(JLPolygon jlPolygon, Action action) {
-                System.out.println("object move listener for jlPolygon:" + jlPolygon);
+                log.info("object move listener for jlPolygon:" + jlPolygon);
             }
         });
-    }
-
-
-    private AnchorPane createBasePane() {
-        AnchorPane inside = new AnchorPane();
-        inside.setStyle("-fx-background-color: #555555");
-        AnchorPane.setLeftAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
-        AnchorPane.setRightAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
-        AnchorPane.setTopAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
-        AnchorPane.setBottomAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
-
-        return inside;
-
     }
 }
