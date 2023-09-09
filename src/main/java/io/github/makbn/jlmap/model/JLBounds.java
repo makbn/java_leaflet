@@ -9,12 +9,11 @@ import java.util.Objects;
 
 /**
  * Represents a rectangular geographical area on a map.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter
 @Builder
-@ToString
 public class JLBounds {
     /**
      * the north-east point of the bounds.
@@ -160,5 +159,10 @@ public class JLBounds {
     @Override
     public int hashCode() {
         return Objects.hash(northEast, southWest);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s, %s]", northEast, southWest);
     }
 }
