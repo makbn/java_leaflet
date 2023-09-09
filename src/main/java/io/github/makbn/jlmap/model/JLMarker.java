@@ -5,7 +5,7 @@ import lombok.*;
 
 /**
  * JLMarker is used to display clickable/draggable icons on the map!
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter

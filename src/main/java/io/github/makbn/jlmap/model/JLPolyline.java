@@ -4,7 +4,7 @@ import lombok.*;
 
 /**
  * A class for drawing polyline overlays on the map.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter

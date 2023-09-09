@@ -4,7 +4,7 @@ import lombok.*;
 
 /**
  * A circle of a fixed size with radius specified in pixels.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter
