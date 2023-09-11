@@ -19,7 +19,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots package
 
   deploy:
-    if: github.ref_name == 'dev/**'
+    if: contains(github.ref_name, 'dev/')
 
     runs-on: ubuntu-latest
     steps:
