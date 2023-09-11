@@ -1,6 +1,6 @@
 name: Java Leaflet Build
 #
-on: [push]
+on: [ push ]
 #
 jobs:
   build:
@@ -19,8 +19,11 @@ jobs:
         run: mvn --batch-mode --update-snapshots package
 
   deploy:
+    needs: [ "build" ]
     if: contains(github.ref_name, 'dev/')
-
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,6 +35,6 @@ jobs:
 
       - name: Deploy to GitHub Packages
         env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOY_PACKAGE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn deploy
 
