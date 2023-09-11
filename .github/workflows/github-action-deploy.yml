@@ -5,8 +5,8 @@ on:
     workflows: ["Java Leaflet Build"]
     types:
       - completed
-    branches:
-      - 'dev/**'
+#    branches:
+#     - 'dev/**'
 #
 jobs:
   deploy:
@@ -16,7 +16,8 @@ jobs:
 
       - uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: '17'
+          distribution: 'corretto'
 
       - name: Deploy to GitHub Packages
         env:
