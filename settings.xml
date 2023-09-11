@@ -10,15 +10,15 @@
             <id>github</id>
             <repositories>
                 <repository>
-                    <id>central</id>
-                    <url>https://repo1.maven.org/maven2</url>
-                </repository>
-                <repository>
                     <id>github</id>
+                    <name>GitHub makbn Apache Maven Packages</name>
                     <url>https://maven.pkg.github.com/makbn/java_leaflet</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
                 </repository>
             </repositories>
         </profile>
