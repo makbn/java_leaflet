@@ -163,5 +163,4 @@
             <url>https://maven.pkg.github.com/makbn/java_leaflet</url>
         </repository>
     </distributionManagement>
-
 </project>
