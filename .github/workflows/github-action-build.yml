@@ -37,5 +37,5 @@ jobs:
         env:
           GITHUB_USERNAME: makbn
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn deploy
+        run: mvn --settings .mvn/settings.xml deploy
 
