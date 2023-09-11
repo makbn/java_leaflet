@@ -60,7 +60,7 @@ public class JLLatLng {
      * @return Returns true if the given {{@link JLLatLng}} point is at the same position (within a small margin of error).
      * The margin of error can be overridden by setting maxMargin.
      */
-    public boolean equals(Object o, int maxMargin) {
+    public boolean equals(Object o, float maxMargin) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JLLatLng latLng = (JLLatLng) o;
