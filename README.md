@@ -1,9 +1,10 @@
 ## Java Leaflet
 Java wrapper for Leaflet, JavaScript library for mobile-friendly interactive maps.
 
-*  Current version: **v1.6.0**
+*  Current version: **v1.9.4**
+* Previous version: [v1..6.0](https://github.com/makbn/java_leaflet/tree/release/1.6.0)
 
-![Java-Leaflet Test](http://tilin.ir/gnjlRNk)
+![Java-Leaflet Test](.github/doc/app.png)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakbn%2Fjava_leaflet.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakbn%2Fjava_leaflet?ref=badge_shield)
 
 > Leaflet is the leading open-source JavaScript library for mobile-friendly interactive maps. Weighing just about 38 KB of JS, it has all the mapping features most > developers ever need.
@@ -17,12 +18,12 @@ First, you need to initialize an instance of `JLMapView`:
 ```java
 final JLMapView map = JLMapView
         .builder()
-        .mapType(JLProperties.MapType.DARK)
-        .accessToken(ACCESS_TOKEN)
+        .mapType(JLProperties.MapType.OSM_MAPNIK)
+        .showZoomController(true)
         .startCoordinate(JLLatLng.builder()
-                .lat(43.54)
-                .lng(22.54)
-                .build())
+            .lat(51.044)
+            .lng(114.07)
+            .build())
         .build();
 
 ```
@@ -31,6 +32,8 @@ Based on Leaflet JS, you can interact with map in different layers. in this proj
 * `map` for direct changes on map
 * `map.getUiLayer()` for changes on UI layer like markers.
 * `map.getVectorLayer()` represents the Vector layer on Leaflet map.
+* `map.getControlLayer()` represents the control layer for setting the zoom level.
+* `map.getGeoJsonLayer()` represents the GeoJson layer.
 
 
 ### Map functions
@@ -43,8 +46,7 @@ Some map view functionalities are available in map layer like `setView` or `setM
 map.setView(JLLatLng.builder()
         .lng(10)
         .lat(10)
-        .build()
-        );
+        .build());
 ```
 
 * Add a listener for map events:
@@ -62,11 +64,18 @@ map.setMapListener(new OnJLMapViewListener() {
         }
 
         @Override
-        public void onMove(Action action, JLLatLng center, JLBounds bounds, int zoomLevel) {
-            super.onMove(action, center, bounds, zoomLevel);
-
-            System.out.println("map on move: " + action + " c:" + center + " \t bounds:" + bounds + "\t z:" + zoomLevel);
-
+        public void onAction(Event event) {
+            if (event instanceof MoveEvent moveEvent) {
+                log.info("move event: " + moveEvent.action() + " c:" + moveEvent.center()
+                        + " \t bounds:" + moveEvent.bounds() + "\t z:" + moveEvent.zoomLevel());
+            } else if (event instanceof ClickEvent clickEvent) {
+                log.info("click event: " + clickEvent.center());
+                map.getUiLayer().addPopup(clickEvent.center(), "New Click Event!", JLOptions.builder()
+                        .closeButton(false)
+                        .autoClose(false).build());
+            } else if (event instanceof ZoomEvent zoomEvent) {
+                log.info("zoom event: " + zoomEvent.zoomLevel());
+            }
         }
 }
 ```
@@ -84,6 +93,14 @@ map.getUiLayer()
                         .lng(51.45)
                         .build(), "Tehran", true)
     .setOnActionListener(getListener());
+```
+
+Controlling map's zoom level:
+```java
+// map zoom functionalities
+map.getControlLayer().setZoom(5);
+map.getControlLayer().zoomIn(2);
+map.getControlLayer().zoomOut(1);
 ```
 
 you can add a listener for some Objects on the map:
@@ -105,7 +122,7 @@ marker.setOnActionListener(new OnJLObjectActionListener<JLMarker>() {
 
 ### Vector layer
 
-Represents the Vector layer on Leaflet map. Poly lines, Polygons, and shapes are available in this layer.
+Represents the Vector layer for Leaflet map. Poly lines, Polygons, and shapes are available in this layer.
 
 ```java
 map.getVectorLayer()
@@ -116,6 +133,18 @@ map.getVectorLayer()
         );
 ``` 
 
+### GeoJson layer
+Represents the GeoJson layer for Leaflet map and defines methods for adding and managing
+GeoJSON data layers in a Leaflet map.
+```java
+JLGeoJsonObject geoJsonObject = map.getGeoJsonLayer()
+                        .addFromUrl("https://pkgstore.datahub.io/examples/geojson-tutorial/example/data/db696b3bf628d9a273ca9907adcea5c9/example.geojson");
+
+```
+You can add GeoJson data from three different sources:
+* From a file using `map.getGeoJsonLayer().addFromFile([FILE])`
+* From a URL using `map.getGeoJsonLayer().addFromUrl([URL])`
+* From a GeoJson content `map.getGeoJsonLayer().addFromContent([CONTENT])`
 ### Styling
 
 You can pass `JLOptions` to each method for changing the default style! 
@@ -133,23 +162,35 @@ You can pass `JLOptions` to each method for changing the default style!
         );
 ```
 
-For the map itself, you can choose between these themes:
+For the map itself, you can choose between themes available in `JLProperties.MapType` class. The `JLProperties.MapType.OSM_MAPNIK` is available to be used without any access key but for the rest of them, you need to define your own map using `JLProperties.MapType` and passing proper list of key-values containing all the necessary access keys. 
+```java
+JLProperties.MapType myMapType = new JLProperties.MapType("HEREv3.terrainDay",
+            Set.of(new JLMapOption.Parameter("apiKey", "<insert apiKey here>")));
+    
+    JLMapView map = JLMapView
+            .builder()
+            .mapType(myMapType)
+            .showZoomController(true)
+            .startCoordinate(JLLatLng.builder()
+                    .lat(51.044)
+                    .lng(114.07)
+                    .build())
+            .build();
+```
 
-* `LIGHT` for mapbox/light-v10
-* `DARK` for mapbox/dark-v10
-* `OUTDOOR` for mapbox/outdoors-v11
-* `SATELLITE` for mapbox/satellite-v9
-* `SATELLITE_STREET` for mapbox/satellite-streets-v11
-* `STREET` for mapbox/streets-v11
+Read more:
+
+* https://github.com/leaflet-extras/leaflet-providers!
 
 
 ## TODO
 
-- [ ] Adding GeoJson Support
+- [X] Adding GeoJson Support
+- [ ] Adding better support for Map providers
 - [ ] Adding SVG support
 - [ ] Adding animation support
 - [ ] Separating JS and HTML
-- [ ] Publishing package on Github
+- [ ] Publishing package on GitHub
 
 **Disclaimer**: I've implemented this project for one of my academic paper in the area of geo-visualization. So, im not contributing actively! One more thing, I'm not a Javascript developer!
 
