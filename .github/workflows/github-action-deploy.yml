@@ -3,12 +3,13 @@ name: Publish to GitHub Packages
 on:
   workflow_run:
     workflows: ["Java Leaflet Build"]
-    types: [completed]
+    types:
+      - completed
     branches:
       - 'dev/**'
 #
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
