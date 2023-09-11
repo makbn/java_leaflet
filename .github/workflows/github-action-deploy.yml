@@ -1,12 +1,12 @@
 name: Publish to GitHub Packages
-
+#
 on:
   workflow_run:
     workflows: ["Java Leaflet Build"]
     types: [completed]
     branches:
-      - 'releases/**'
-
+      - 'dev/**'
+#
 jobs:
   build:
     runs-on: ubuntu-latest
