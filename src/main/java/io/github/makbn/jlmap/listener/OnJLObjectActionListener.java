@@ -1,6 +1,7 @@
 package io.github.makbn.jlmap.listener;
 
 import io.github.makbn.jlmap.model.JLObject;
+import lombok.Getter;
 
 
 public abstract class OnJLObjectActionListener<T extends JLObject<?>> {
@@ -10,19 +11,28 @@ public abstract class OnJLObjectActionListener<T extends JLObject<?>> {
     public abstract void move(T t, Action action);
 
 
+    @Getter
     public enum Action {
         /**
          * Fired when the marker is moved via setLatLng or by dragging.
          * Old and new coordinates are included in event arguments as oldLatLng, {{@link io.github.makbn.jlmap.model.JLLatLng}}.
          */
-        MOVE, MOVE_START, MOVE_END,
+        MOVE("move"),
+        MOVE_START("movestart"),
+        MOVE_END("moveend"),
         /**
          * Fired when the user clicks (or taps) the layer.
          */
-        CLICK,
+        CLICK("click"),
         /**
-         * Fired when the user double-clicks (or double-taps) the layer.
+         * Fired when the user zooms.
          */
-        DOUBLE_CLICK,
+        ZOOM("zoom");
+
+        final String jsEventName;
+
+        Action(String name) {
+            this.jsEventName = name;
+        }
     }
 }
