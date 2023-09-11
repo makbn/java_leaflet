@@ -1,9 +1,9 @@
-name: Publish to GitHub Packages on Release Branch
+name: Publish to GitHub Packages
 
 on:
   workflow_run:
-    workflow: "Java Leaflet Build"
-    type: completed
+    workflows: ["Java Leaflet Build"]
+    types: [completed]
     branches:
       - 'releases/**'
 
