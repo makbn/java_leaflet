@@ -3,12 +3,12 @@ package io.github.makbn.jlmap.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.Objects;
 
 /**
  * Represents a rectangular geographical area on a map.
+ *
  * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
@@ -86,12 +86,12 @@ public class JLBounds {
      */
     public String toBBoxString() {
         return String.format("%f,%f,%f,%f", southWest.getLng(), southWest.getLat(),
-                northEast.getLat(), northEast.getLat());
+                northEast.getLng(), northEast.getLat());
     }
 
     /**
      * @param bounds given bounds
-     * @return {{@link Boolean#TRUE}} if the rectangle contains the given bounds.
+     * @return {@code true} if the rectangle contains the given bounds.
      */
     public boolean contains(JLBounds bounds) {
         return (bounds.getSouthWest().getLat() >= southWest.getLat())
@@ -102,7 +102,7 @@ public class JLBounds {
 
     /**
      * @param point given point
-     * @return {{@link Boolean#TRUE}} if the rectangle contains the given point.
+     * @return {@code true} if the rectangle contains the given point.
      */
     public boolean contains(JLLatLng point) {
         return (point.getLat() >= southWest.getLat())
@@ -125,20 +125,20 @@ public class JLBounds {
      * Negative values will retract the bounds.
      */
     public JLBounds pad(double bufferRatio) {
-        double heightBuffer = Math.abs(southWest.getLat() - northEast.getLat()) * bufferRatio;
-        double widthBuffer = Math.abs(southWest.getLng() - northEast.getLng()) * bufferRatio;
+        double latBuffer = Math.abs(southWest.getLat() - northEast.getLat()) * bufferRatio;
+        double lngBuffer = Math.abs(southWest.getLng() - northEast.getLng()) * bufferRatio;
 
         return new JLBounds(
-                new JLLatLng(southWest.getLat() - heightBuffer, southWest.getLng() - widthBuffer),
-                new JLLatLng(northEast.getLat() + heightBuffer, northEast.getLng() + widthBuffer));
+                new JLLatLng(southWest.getLat() - latBuffer, southWest.getLng() - lngBuffer),
+                new JLLatLng(northEast.getLat() + latBuffer, northEast.getLng() + lngBuffer));
     }
 
     /**
      * @param bounds    the given bounds
      * @param maxMargin The margin of error
-     * @return {{@link Boolean#TRUE}} if the rectangle is equivalent (within a small margin of error) to the given bounds.
+     * @return true if the rectangle is equivalent (within a small margin of error) to the given bounds.
      */
-    public boolean equals(JLBounds bounds, int maxMargin) {
+    public boolean equals(JLBounds bounds, float maxMargin) {
         if (bounds == null) {
             return false;
         }
