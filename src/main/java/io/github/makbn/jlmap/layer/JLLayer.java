@@ -2,21 +2,27 @@ package io.github.makbn.jlmap.layer;
 
 import io.github.makbn.jlmap.JLMapCallbackHandler;
 import javafx.scene.web.WebEngine;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 /**
  * Represents the basic layer.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class JLLayer {
-    protected WebEngine engine;
-    protected JLMapCallbackHandler callbackHandler;
+    WebEngine engine;
+    JLMapCallbackHandler callbackHandler;
 
-    public JLLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
+    protected JLLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
         this.engine = engine;
         this.callbackHandler = callbackHandler;
     }
 
+    /**
+     * Forces the subclasses to implement {@link #JLLayer(WebEngine, JLMapCallbackHandler)} constructor!
+     */
     private JLLayer(){
-        //do nothing! just force subclasses to implement upper constructor!
+        // NO-OP
     }
 }

@@ -1,6 +1,7 @@
 package io.github.makbn.jlmap.layer;
 
 import io.github.makbn.jlmap.JLMapCallbackHandler;
+import io.github.makbn.jlmap.layer.leaflet.LeafletUILayerInt;
 import io.github.makbn.jlmap.model.JLLatLng;
 import io.github.makbn.jlmap.model.JLMarker;
 import io.github.makbn.jlmap.model.JLOptions;
@@ -9,9 +10,9 @@ import javafx.scene.web.WebEngine;
 
 /**
  * Represents the UI layer on Leaflet map.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
-public class JLUiLayer extends JLLayer {
+public class JLUiLayer extends JLLayer implements LeafletUILayerInt {
 
     public JLUiLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
@@ -24,6 +25,7 @@ public class JLUiLayer extends JLLayer {
      * @param text   content of the related popup if available!
      * @return the instance of added {{@link JLMarker}} on the map.
      */
+    @Override
     public JLMarker addMarker(JLLatLng latLng, String text, boolean draggable) {
         String result = engine.executeScript(String.format("addMarker(%f, %f, '%s', %b)", latLng.getLat(), latLng.getLng(), text, draggable))
                 .toString();
@@ -38,6 +40,7 @@ public class JLUiLayer extends JLLayer {
      * @param id of the marker for removing.
      * @return {{@link Boolean#TRUE}} if removed successfully.
      */
+    @Override
     public boolean removeMarker(int id){
         String result = engine.executeScript(String.format("removeMarker(%d)", id))
                 .toString();
@@ -52,8 +55,9 @@ public class JLUiLayer extends JLLayer {
      * @param options see {{@link JLOptions}} for customizing
      * @return the instance of added {{@link JLPopup}} on the map.
      */
+    @Override
     public JLPopup addPopup(JLLatLng latLng, String text, JLOptions options){
-        String result = engine.executeScript(String.format("addPopup(%f, %f, %s, %b , %b)", latLng.getLat(),
+        String result = engine.executeScript(String.format("addPopup(%f, %f, \"%s\", %b , %b)", latLng.getLat(),
                 latLng.getLng(), text, options.isCloseButton(), options.isAutoClose()))
                 .toString();
 
@@ -63,17 +67,19 @@ public class JLUiLayer extends JLLayer {
 
     /**
      * Add popup with {{@link JLOptions#DEFAULT}} options
-     * @see {{@link JLUiLayer#addPopup(JLLatLng, String, JLOptions)}}
+     * @see JLUiLayer#addPopup(JLLatLng, String, JLOptions)
      */
+    @Override
     public JLPopup addPopup(JLLatLng latLng, String text){
         return addPopup(latLng, text, JLOptions.DEFAULT);
     }
 
     /**
-     * Remove a {{@link JLPopup}} from the map.
+     * Remove a {@link JLPopup} from the map.
      * @param id of the marker for removing.
-     * @return {{@link Boolean#TRUE}} if removed successfully.
+     * @return true if removed successfully.
      */
+    @Override
     public boolean removePopup(int id){
         String result = engine.executeScript(String.format("removePopup(%d)", id))
                 .toString();

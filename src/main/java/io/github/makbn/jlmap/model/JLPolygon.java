@@ -6,7 +6,7 @@ import lombok.*;
  * A class for drawing polygon overlays on the map.
  * Note that points you pass when creating a polygon shouldn't
  * have an additional last point equal to the first one.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter

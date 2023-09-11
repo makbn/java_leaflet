@@ -3,9 +3,10 @@ package io.github.makbn.jlmap.model;
 import io.github.makbn.jlmap.listener.OnJLObjectActionListener;
 
 /**
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * Represents basic object classes for interacting with Leaflet
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
-public abstract class JLObject<T extends JLObject> {
+public abstract class JLObject<T extends JLObject<?>> {
     private OnJLObjectActionListener<T> listener;
 
     public OnJLObjectActionListener<T> getOnActionListener() {

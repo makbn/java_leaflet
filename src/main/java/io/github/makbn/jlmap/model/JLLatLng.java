@@ -7,13 +7,12 @@ import java.util.Objects;
 
 /**
  * Represents a geographical point with a certain latitude and longitude.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-@ToString
 public class JLLatLng {
     /** geographical given latitude in degrees */
     private final double lat;
@@ -61,7 +60,7 @@ public class JLLatLng {
      * @return Returns true if the given {{@link JLLatLng}} point is at the same position (within a small margin of error).
      * The margin of error can be overridden by setting maxMargin.
      */
-    public boolean equals(Object o, int maxMargin) {
+    public boolean equals(Object o, float maxMargin) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JLLatLng latLng = (JLLatLng) o;
@@ -71,5 +70,10 @@ public class JLLatLng {
     @Override
     public int hashCode() {
         return Objects.hash(lat, lng);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%f, %f]", lat, lng);
     }
 }

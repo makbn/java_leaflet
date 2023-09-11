@@ -1,49 +1,30 @@
 package io.github.makbn.jlmap.listener;
 
 import io.github.makbn.jlmap.JLMapView;
-import io.github.makbn.jlmap.model.JLBounds;
-import io.github.makbn.jlmap.model.JLLatLng;
+import io.github.makbn.jlmap.listener.event.Event;
+import lombok.NonNull;
 
 
-public abstract class OnJLMapViewListener {
+public interface OnJLMapViewListener {
 
     /**
      * called after the map is fully loaded
      *
-     * @param mapView
+     * @param mapView loaded map
      */
-    public abstract void mapLoadedSuccessfully(JLMapView mapView);
+    void mapLoadedSuccessfully(@NonNull JLMapView mapView);
 
     /**
      * called after the map got an exception on loading
      */
-    public abstract void mapFailed();
+    void mapFailed();
 
-    /**
-     * Fired repeatedly during any movement of the map, including pan and fly animations.
-     *
-     * @param action    action of movement
-     * @param center    coordinate of map
-     * @param bounds    of map
-     * @param zoomLevel of map
-     */
-    public void onMove(Action action, JLLatLng center, JLBounds bounds, int zoomLevel) {
+    default void onAction(Event event) {
 
     }
 
-    /**
-     * Fired repeatedly during any movement of the map, including pan and fly animations.
-     * Fired when the map has changed, after any animations.
-     * Fired when the center of the map stats/stops changing (e.g. user starts/stopped dragging the map).
-     *
-     * @param action zoom action {{@link Action#ZOOM}}
-     *               or {{@link Action#ZOOM_START}} or {{@link Action#ZOOM_END}}
-     */
-    public void onZoom(Action action, int zoomLevel) {
 
-    }
-
-    public enum Action {
+    enum Action {
         /**
          * zoom level changes continuously
          */
@@ -68,7 +49,11 @@ public abstract class OnJLMapViewListener {
         /**
          * user ends to move the map
          */
-        MOVE_END
+        MOVE_END,
+        /**
+         * user click on the map
+         */
+        CLICK
 
     }
 }

@@ -1,17 +1,21 @@
 package io.github.makbn.jlmap.model;
 
 
-import lombok.*;
+import io.github.makbn.jlmap.listener.OnJLObjectActionListener;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * JLMarker is used to display clickable/draggable icons on the map!
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ *
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @Builder
-@ToString
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class JLMarker extends JLObject<JLMarker> {
     /**
      * id of object! this is an internal id for JLMap Application and not related to Leaflet!
@@ -30,10 +34,10 @@ public class JLMarker extends JLObject<JLMarker> {
     @Override
     public void update(Object... params) {
         super.update(params);
-        if (params != null && params.length > 0) {
-            if (String.valueOf(params[0]).equals("moveend") && params[1] != null) {
-                latLng = (JLLatLng) params[1];
-            }
+        if (params != null && params.length > 0
+                && String.valueOf(params[0]).equals(OnJLObjectActionListener.Action.MOVE_END.getJsEventName())
+                && params[1] != null) {
+            latLng = (JLLatLng) params[1];
         }
     }
 }

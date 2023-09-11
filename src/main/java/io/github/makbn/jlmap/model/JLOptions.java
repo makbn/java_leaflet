@@ -10,7 +10,7 @@ import lombok.Setter;
  * Optional value for theming objects inside the map!
  * Note that all options are not available for all objects!
  * Read more at Leaflet Official Docs.
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Getter
 @Setter
@@ -19,52 +19,52 @@ import lombok.Setter;
 public class JLOptions {
 
     /** Default value for theming options. */
-    public final static JLOptions DEFAULT = JLOptions.builder().build();
+    public static final JLOptions DEFAULT = JLOptions.builder().build();
 
-    @Builder.Default
     /** Stroke color. Default is {{@link Color#BLUE}} */
+    @Builder.Default
     private Color color = Color.BLUE;
 
-    @Builder.Default
     /** Fill color. Default is {{@link Color#BLUE}} */
+    @Builder.Default
     private Color fillColor = Color.BLUE;
 
-    @Builder.Default
     /** Stroke width in pixels. Default is 3 */
+    @Builder.Default
     private int weight = 3;
 
+    /** Whether to draw stroke along the path. Set it to false for disabling borders on polygons or circles. */
     @Builder.Default
-    /** Whether to draw stroke along the path. Set it to false to disable borders on polygons or circles. */
     private boolean stroke = true;
 
+    /** Whether to fill the path with color. Set it to false fo disabling filling on polygons or circles. */
     @Builder.Default
-    /** Whether to fill the path with color. Set it to false to disable filling on polygons or circles. */
     private boolean fill = true;
 
-    @Builder.Default
     /** Stroke opacity */
+    @Builder.Default
     private double opacity = 1.0;
 
-    @Builder.Default
     /** Fill opacity. */
+    @Builder.Default
     private double fillOpacity = 0.2;
 
-    @Builder.Default
     /** How much to simplify the polyline on each zoom level.
-     * More means better performance and smoother look, and less means more accurate representation.
+     * greater value means better performance and smoother look, and smaller value means more accurate representation.
      */
+    @Builder.Default
     private double smoothFactor = 1.0;
 
-    @Builder.Default
     /** Controls the presence of a close button in the popup. */
+    @Builder.Default
     private boolean closeButton = true;
 
-    @Builder.Default
     /** Set it to false if you want to override the default behavior of the popup closing when another popup is opened. */
+    @Builder.Default
     private boolean autoClose = true;
 
-    @Builder.Default
     /** Whether the marker is draggable with mouse/touch or not. */
+    @Builder.Default
     private boolean draggable = false;
 
 }

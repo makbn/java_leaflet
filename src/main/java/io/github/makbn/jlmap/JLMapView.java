@@ -1,9 +1,7 @@
 package io.github.makbn.jlmap;
 
 import com.sun.javafx.webkit.WebConsoleListener;
-import io.github.makbn.jlmap.layer.JLLayer;
-import io.github.makbn.jlmap.layer.JLUiLayer;
-import io.github.makbn.jlmap.layer.JLVectorLayer;
+import io.github.makbn.jlmap.layer.*;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
 import io.github.makbn.jlmap.model.JLLatLng;
 import io.github.makbn.jlmap.model.JLMapOption;
@@ -19,9 +17,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.log4j.Log4j2;
 import netscape.javascript.JSObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.*;
@@ -29,79 +33,82 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * by: Mehdi Akbarian Rastaghi (@makbn)
+ * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @Log4j2
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class JLMapView extends JLMapController {
-
-    private WebView webView;
-    private OnJLMapViewListener mapListener;
-    private HashMap<String, JLLayer> layers;
-    private boolean controllerAdded = false;
-    private JLMapCallbackHandler jlMapCallbackHandler;
+    @Getter
+    WebView webView;
+    JLMapCallbackHandler jlMapCallbackHandler;
+    @NonFinal
+    HashMap<Class<? extends JLLayer>, JLLayer> layers;
+    @NonFinal
+    boolean controllerAdded = false;
+    @NonFinal
+    @Nullable
+    OnJLMapViewListener mapListener;
 
     @Builder
-    private JLMapView(OnJLMapViewListener mapListener, JLProperties.MapType mapType, JLLatLng startCoordinate, String accessToken) {
+    private JLMapView(@NonNull JLProperties.MapType mapType, @NonNull JLLatLng startCoordinate, boolean showZoomController) {
         super(JLMapOption.builder()
                 .startCoordinate(startCoordinate)
                 .mapType(mapType)
-                .accessToken(accessToken)
+                .additionalParameter(Set.of(new JLMapOption.Parameter("zoomControl", Objects.toString(showZoomController))))
                 .build());
-        this.mapListener = mapListener;
+        this.webView = new WebView();
+        this.jlMapCallbackHandler = new JLMapCallbackHandler(this);
         initialize();
     }
 
     private void initialize() {
-        webView = new WebView();
-        webView.getEngine().onStatusChangedProperty().addListener((observable, oldValue, newValue) -> System.out.println());
-        webView.getEngine().onErrorProperty().addListener((observable, oldValue, newValue) -> System.out.println());
-        webView.getEngine().getLoadWorker().stateProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    checkForBrowsing(webView.getEngine());
-                    if (newValue == Worker.State.FAILED) {
-                        System.out.println("failed");
-                    } else if (newValue == Worker.State.SUCCEEDED) {
-                        removeMapBlur();
-                        webView.getEngine().executeScript("removeNativeAttr()");
-                        addControllerToDocument();
-                        mapListener.mapLoadedSuccessfully(this);
-                    } else {
-                        setBlurEffectForMap();
-                    }
-                });
 
-        WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId)
+        webView.getEngine().onStatusChangedProperty().addListener((observable, oldValue, newValue)
+                -> log.debug(String.format("Old Value: %s\tNew Value: %s", oldValue, newValue)));
+        webView.getEngine().onErrorProperty().addListener((observable, oldValue, newValue)
+                -> log.debug(String.format("Old Value: %s\tNew Value: %s", oldValue, newValue)));
+        webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            checkForBrowsing(webView.getEngine());
+            if (newValue == Worker.State.FAILED) {
+                log.info("failed to load!");
+            } else if (newValue == Worker.State.SUCCEEDED) {
+                removeMapBlur();
+                webView.getEngine().executeScript("removeNativeAttr()");
+                addControllerToDocument();
+
+                if (mapListener != null) {
+                    mapListener.mapLoadedSuccessfully(this);
+                }
+
+            } else {
+                setBlurEffectForMap();
+            }
+        });
+
+        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceId)
                 -> log.error(String.format("sid: %s ln: %d m:%s", sourceId, lineNumber, message)));
-        jlMapCallbackHandler = new JLMapCallbackHandler(this);
 
-        InputStream in = getClass().getResourceAsStream("/index.html");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         File index = null;
-        try {
+        try (InputStream in = getClass().getResourceAsStream("/index.html")) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(in)));
             index = File.createTempFile("jlmapindex", ".html");
             Files.write(index.toPath(), reader.lines().collect(Collectors.joining("\n")).getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
-
         webView.getEngine()
-                .load("file:" + index.getAbsolutePath() + getMapOptions());
+                .load(String.format("file:%s%s", Objects.requireNonNull(index).getAbsolutePath(), mapOption.toQueryString()));
 
         setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         getChildren().add(webView);
         customizeWebviewStyles();
-    }
-
-    private String getMapOptions() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("?mapid=%s", mapOption.getMapType().name()));
-        sb.append(String.format("&access_token=%s", mapOption.getAccessToken()));
-
-        return sb.toString();
     }
 
     private void checkForBrowsing(WebEngine engine) {
@@ -114,9 +121,9 @@ public class JLMapView extends JLMapController {
                 String os = System.getProperty("os.name", "generic");
                 if (os.toLowerCase().contains("mac")) {
                     Runtime.getRuntime().exec("open " + address);
-                }else if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                } else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     Desktop.getDesktop().browse(new URL(address).toURI());
-                }else {
+                } else {
                     Runtime.getRuntime().exec("xdg-open " + address);
                 }
             } catch (IOException | URISyntaxException e) {
@@ -142,7 +149,7 @@ public class JLMapView extends JLMapController {
     }
 
     private void setBlurEffectForMap() {
-        if(webView.getEffect() == null) {
+        if (webView.getEffect() == null) {
             GaussianBlur gaussianBlur = new GaussianBlur();
             gaussianBlur.setRadius(JLProperties.START_ANIMATION_RADIUS);
             webView.setEffect(gaussianBlur);
@@ -161,19 +168,14 @@ public class JLMapView extends JLMapController {
         setBottomAnchor(this, 0.5);
     }
 
-
-    public WebView getWebView() {
-        return webView;
-    }
-
     @Override
-    protected HashMap<String, JLLayer> getLayers() {
-        if(layers == null) {
+    protected HashMap<Class<? extends JLLayer>, JLLayer> getLayers() {
+        if (layers == null) {
             layers = new HashMap<>();
-            layers.put(JLUiLayer.class.getSimpleName(),
-                    new JLUiLayer(getWebView().getEngine(), jlMapCallbackHandler));
-            layers.put(JLVectorLayer.class.getSimpleName(),
-                    new JLVectorLayer(getWebView().getEngine(), jlMapCallbackHandler));
+            layers.put(JLUiLayer.class, new JLUiLayer(getWebView().getEngine(), jlMapCallbackHandler));
+            layers.put(JLVectorLayer.class, new JLVectorLayer(getWebView().getEngine(), jlMapCallbackHandler));
+            layers.put(JLControlLayer.class, new JLControlLayer(getWebView().getEngine(), jlMapCallbackHandler));
+            layers.put(JLGeoJsonLayer.class, new JLGeoJsonLayer(getWebView().getEngine(), jlMapCallbackHandler));
         }
         return layers;
     }
@@ -181,18 +183,19 @@ public class JLMapView extends JLMapController {
     @Override
     protected void addControllerToDocument() {
         JSObject window = (JSObject) webView.getEngine().executeScript("window");
-        if(!controllerAdded) {
+        if (!controllerAdded) {
             window.setMember("app", jlMapCallbackHandler);
             log.debug("controller added to js scripts");
             controllerAdded = true;
         }
+        webView.getEngine().setOnError(webErrorEvent -> log.error(webErrorEvent.getMessage()));
     }
 
-    public OnJLMapViewListener getMapListener() {
-        return mapListener;
+    public Optional<OnJLMapViewListener> getMapListener() {
+        return Optional.ofNullable(mapListener);
     }
 
-    public void setMapListener(OnJLMapViewListener mapListener) {
+    public void setMapListener(@NonNull OnJLMapViewListener mapListener) {
         this.mapListener = mapListener;
     }
 }
