@@ -127,11 +127,6 @@ public class JLMapCallbackHandler implements Serializable {
                         .click(jlObject, OnJLObjectActionListener.Action.CLICK);
                 return true;
             }
-            case "double_click" -> {
-                jlObject.getOnActionListener()
-                        .click(jlObject, OnJLObjectActionListener.Action.DOUBLE_CLICK);
-                return true;
-            }
             default -> log.error(functionName + " not implemented!");
         }
         return false;
