@@ -92,6 +92,11 @@ public class Leaflet extends Application {
                                 .lng(51.45)
                                 .build(), 30000, JLOptions.DEFAULT);
 
+                // map zoom functionalities
+                map.getControlLayer().setZoom(5);
+                map.getControlLayer().zoomIn(2);
+                map.getControlLayer().zoomOut(1);
+
 
                 JLGeoJsonObject geoJsonObject = map.getGeoJsonLayer()
                         .addFromUrl("https://pkgstore.datahub.io/examples/geojson-tutorial/example/data/db696b3bf628d9a273ca9907adcea5c9/example.geojson");
