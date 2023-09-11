@@ -1,5 +1,4 @@
 name: Java Leaflet Build
-
 #
 on: [push]
 #
