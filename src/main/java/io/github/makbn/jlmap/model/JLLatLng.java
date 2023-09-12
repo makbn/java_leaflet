@@ -1,7 +1,10 @@
 package io.github.makbn.jlmap.model;
 
 import io.github.makbn.jlmap.JLProperties;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -29,8 +32,10 @@ public class JLLatLng {
     public double distanceTo(JLLatLng dest){
         double latDistance = Math.toRadians(dest.getLat() - lat);
         double lonDistance = Math.toRadians(dest.getLng() - lng);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(dest.getLat()))
+        double a = Math.sin(latDistance / 2)
+                * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat))
+                * Math.cos(Math.toRadians(dest.getLat()))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = JLProperties.EARTH_RADIUS * c * 1000;
@@ -42,7 +47,8 @@ public class JLLatLng {
     /**
      *
      * @param o The given point
-     * @return Returns true if the given {{@link JLLatLng}} point is exactly at the same position.
+     * @return Returns true if the given {{@link JLLatLng}} point is exactly
+     * at the same position.
      */
     @Override
     public boolean equals(Object o) {
@@ -57,7 +63,8 @@ public class JLLatLng {
      *
      * @param o The given point
      * @param maxMargin The margin of error
-     * @return Returns true if the given {{@link JLLatLng}} point is at the same position (within a small margin of error).
+     * @return Returns true if the given {{@link JLLatLng}} point is at the
+     * same position (within a small margin of error).
      * The margin of error can be overridden by setting maxMargin.
      */
     public boolean equals(Object o, float maxMargin) {

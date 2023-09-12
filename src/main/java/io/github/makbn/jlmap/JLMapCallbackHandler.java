@@ -51,9 +51,10 @@ public class JLMapCallbackHandler implements Serializable {
      * @param param5       additional param
      */
     @SuppressWarnings("unchecked")
-    public void functionCalled(String functionName, Object param1, Object param2, Object param3, Object param4,
-                               Object param5) {
-        log.debug(String.format("functionName: %s \tparam1: %s \tparam2: %s \tparam3: %s param4: %s \tparam5: %s%n"
+    public void functionCalled(String functionName, Object param1, Object param2,
+                               Object param3, Object param4, Object param5) {
+        log.debug(String.format("function: %s \tparam1: %s \tparam2: %s " +
+                        "\tparam3: %s param4: %s \tparam5: %s%n"
                 , functionName, param1, param2, param3, param4, param5));
         try {
             //get target class of Leaflet layer in JL Application
@@ -80,21 +81,42 @@ public class JLMapCallbackHandler implements Serializable {
                             return;
 
                         //call listener and exit loop
-                        if (callListenerOnObject(functionName, (JLObject<JLObject<?>>) jlObject, param1, param2, param3, param4, param5))
+                        if (callListenerOnObject(functionName,
+                                (JLObject<JLObject<?>>) jlObject, param1,
+                                param2, param3, param4, param5))
                             return;
                     }
                 }
-            } else if (param1.equals("main_map") && mapView.getMapListener().isPresent()) {
+            } else if (param1.equals("main_map")
+                    && mapView.getMapListener().isPresent()) {
                 switch (functionName) {
-                    case "move" -> mapView.getMapListener().get().onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE, gson.fromJson(String.valueOf(param4), JLLatLng.class),
-                                gson.fromJson(String.valueOf(param5), JLBounds.class), Integer.parseInt(String.valueOf(param3))));
-                    case "movestart" -> mapView.getMapListener().get().onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE_START, gson.fromJson(String.valueOf(param4), JLLatLng.class),
-                                gson.fromJson(String.valueOf(param5), JLBounds.class), Integer.parseInt(String.valueOf(param3))));
-                    case "moveend" -> mapView.getMapListener().get().onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE_END, gson.fromJson(String.valueOf(param4), JLLatLng.class),
-                                    gson.fromJson(String.valueOf(param5), JLBounds.class), Integer.parseInt(String.valueOf(param3))));
-                    case "click" -> mapView.getMapListener().get().onAction(new ClickEvent(gson.fromJson(String.valueOf(param3), JLLatLng.class)));
+                    case "move" -> mapView.getMapListener()
+                            .get()
+                            .onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE,
+                                    gson.fromJson(String.valueOf(param4), JLLatLng.class),
+                                    gson.fromJson(String.valueOf(param5), JLBounds.class),
+                                    Integer.parseInt(String.valueOf(param3))));
+                    case "movestart" -> mapView.getMapListener()
+                            .get()
+                            .onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE_START,
+                                    gson.fromJson(String.valueOf(param4), JLLatLng.class),
+                                    gson.fromJson(String.valueOf(param5), JLBounds.class),
+                                    Integer.parseInt(String.valueOf(param3))));
+                    case "moveend" -> mapView.getMapListener()
+                            .get()
+                            .onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE_END,
+                                    gson.fromJson(String.valueOf(param4), JLLatLng.class),
+                                    gson.fromJson(String.valueOf(param5), JLBounds.class),
+                                    Integer.parseInt(String.valueOf(param3))));
+                    case "click" -> mapView.getMapListener()
+                            .get()
+                            .onAction(new ClickEvent(gson.fromJson(String.valueOf(param3),
+                                    JLLatLng.class)));
 
-                    case "zoom" -> mapView.getMapListener().get().onAction(new ZoomEvent(OnJLMapViewListener.Action.ZOOM, Integer.parseInt(String.valueOf(param3))));
+                    case "zoom" -> mapView.getMapListener()
+                            .get()
+                            .onAction(new ZoomEvent(OnJLMapViewListener.Action.ZOOM,
+                                    Integer.parseInt(String.valueOf(param3))));
                     default -> log.error(functionName + " not implemented!");
                 }
             }
@@ -103,7 +125,8 @@ public class JLMapCallbackHandler implements Serializable {
         }
     }
 
-    private boolean callListenerOnObject(String functionName, JLObject<JLObject<?>> jlObject, Object... params) {
+    private boolean callListenerOnObject(
+            String functionName, JLObject<JLObject<?>> jlObject, Object... params) {
         switch (functionName) {
             case "move" -> {
                 jlObject.getOnActionListener()

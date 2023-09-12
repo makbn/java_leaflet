@@ -11,5 +11,6 @@ import io.github.makbn.jlmap.model.JLLatLng;
  * @param bounds    bounds of map
  * @param zoomLevel zoom level of map
  */
-public record MoveEvent(OnJLMapViewListener.Action action, JLLatLng center, JLBounds bounds, int zoomLevel) implements Event{
+public record MoveEvent(OnJLMapViewListener.Action action, JLLatLng center,
+                        JLBounds bounds, int zoomLevel) implements Event {
 }

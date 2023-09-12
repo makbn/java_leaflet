@@ -13,7 +13,8 @@ import lombok.*;
 @ToString
 public class JLPolyline extends JLObject<JLPolyline> {
     /**
-     * id of JLPolyline! this is an internal id for JLMap Application and not related to Leaflet!
+     * id of JLPolyline! this is an internal id for JLMap Application and not
+     * related to Leaflet!
      */
     private int id;
     /**
@@ -21,7 +22,8 @@ public class JLPolyline extends JLObject<JLPolyline> {
      */
     private JLOptions options;
     /**
-     * The array of {{@link io.github.makbn.jlmap.model.JLLatLng}} points of JLPolyline
+     * The array of {@link io.github.makbn.jlmap.model.JLLatLng} points of
+     * JLPolyline
      */
     private JLLatLng[] vertices;
 }

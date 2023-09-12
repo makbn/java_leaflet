@@ -15,7 +15,8 @@ public abstract class OnJLObjectActionListener<T extends JLObject<?>> {
     public enum Action {
         /**
          * Fired when the marker is moved via setLatLng or by dragging.
-         * Old and new coordinates are included in event arguments as oldLatLng, {{@link io.github.makbn.jlmap.model.JLLatLng}}.
+         * Old and new coordinates are included in event arguments as oldLatLng,
+         * {@link io.github.makbn.jlmap.model.JLLatLng}.
          */
         MOVE("move"),
         MOVE_START("movestart"),
