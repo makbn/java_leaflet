@@ -33,7 +33,8 @@ public class JLOptions {
     @Builder.Default
     private int weight = 3;
 
-    /** Whether to draw stroke along the path. Set it to false for disabling
+    /**
+     * Whether to draw stroke along the path. Set it to false for disabling
      * borders on polygons or circles.
      */
     @Builder.Default

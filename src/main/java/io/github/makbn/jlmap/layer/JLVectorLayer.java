@@ -41,10 +41,10 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
         String latlngs = convertJLLatLngToString(vertices);
         String hexColor = convertColorToString(options.getColor());
         String result = engine.executeScript(
-                String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)",
-                        latlngs, hexColor, options.getWeight(),
-                        options.isStroke(), options.getOpacity(),
-                        options.getSmoothFactor()))
+                        String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)",
+                                latlngs, hexColor, options.getWeight(),
+                                options.isStroke(), options.getOpacity(),
+                                options.getSmoothFactor()))
                 .toString();
 
         int index = Integer.parseInt(result);
@@ -96,10 +96,10 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
         String latlngs = convertJLLatLngToString(vertices);
         String hexColor = convertColorToString(options.getColor());
         String result = engine.executeScript(
-                String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)",
-                        latlngs, hexColor, options.getWeight(),
-                        options.isStroke(), options.getOpacity(),
-                        options.getSmoothFactor()))
+                        String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)",
+                                latlngs, hexColor, options.getWeight(),
+                                options.isStroke(), options.getOpacity(),
+                                options.getSmoothFactor()))
                 .toString();
 
         int index = Integer.parseInt(result);
@@ -136,7 +136,7 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
         String latlngs = convertJLLatLngToString(vertices);
 
         String result = engine.executeScript(String.format(
-                "addPolygon(%s, '%s', '%s', %d, %b, %b, %f, %f, %f)",
+                        "addPolygon(%s, '%s', '%s', %d, %b, %b, %f, %f, %f)",
                         latlngs, convertColorToString(options.getColor()),
                         convertColorToString(options.getFillColor()),
                         options.getWeight(), options.isStroke(),
@@ -186,7 +186,7 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
     @Override
     public JLCircle addCircle(JLLatLng center, int radius, JLOptions options) {
         String result = engine.executeScript(String.format(
-                "addCircle([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
+                        "addCircle([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
                         center.getLat(), center.getLng(), radius,
                         convertColorToString(options.getColor()),
                         convertColorToString(options.getFillColor()),
@@ -239,7 +239,7 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
     public JLCircleMarker addCircleMarker(JLLatLng center, int radius,
                                           JLOptions options) {
         String result = engine.executeScript(String.format(
-                "addCircleMarker([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
+                        "addCircleMarker([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
                         center.getLat(), center.getLng(), radius,
                         convertColorToString(options.getColor()),
                         convertColorToString(options.getFillColor()),

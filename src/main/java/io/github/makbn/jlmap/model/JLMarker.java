@@ -37,7 +37,7 @@ public class JLMarker extends JLObject<JLMarker> {
         super.update(params);
         if (params != null && params.length > 0
                 && String.valueOf(params[0]).equals(
-                        OnJLObjectActionListener.Action.MOVE_END.getJsEventName())
+                OnJLObjectActionListener.Action.MOVE_END.getJsEventName())
                 && params[1] != null) {
             latLng = (JLLatLng) params[1];
         }

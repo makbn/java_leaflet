@@ -1,8 +1,6 @@
 package io.github.makbn.jlmap;
 
 import io.github.makbn.jlmap.model.JLMapOption;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
 import java.util.Collections;
 import java.util.Set;

@@ -1,7 +1,10 @@
 package io.github.makbn.jlmap.model;
 
 import io.github.makbn.jlmap.JLProperties;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 

@@ -84,9 +84,9 @@ abstract class JLMapController extends AnchorPane {
     }
 
     private void checkMapState() {
-        if(getWebView() == null ||
+        if (getWebView() == null ||
                 getWebView().getEngine()
-                .getLoadWorker().getState() != Worker.State.SUCCEEDED){
+                        .getLoadWorker().getState() != Worker.State.SUCCEEDED) {
             throw JLMapNotReadyException.builder().build();
         }
     }
