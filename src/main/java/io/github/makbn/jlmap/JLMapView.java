@@ -44,6 +44,21 @@ import java.util.stream.Collectors;
 @Log4j2
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class JLMapView extends JLMapController {
+
+    @Builder
+    public JLMapView(@NonNull JLProperties.MapType mapType,
+                     @NonNull JLLatLng startCoordinate, boolean showZoomController) {
+        super(JLMapOption.builder()
+                .startCoordinate(startCoordinate)
+                .mapType(mapType)
+                .additionalParameter(Set.of(new JLMapOption.Parameter("zoomControl",
+                        Objects.toString(showZoomController))))
+                .build());
+        this.webView = new WebView();
+        this.jlMapCallbackHandler = new JLMapCallbackHandler(this);
+        initialize();
+    }
+
     @Getter
     WebView webView;
     JLMapCallbackHandler jlMapCallbackHandler;
@@ -55,18 +70,9 @@ public class JLMapView extends JLMapController {
     @Nullable
     OnJLMapViewListener mapListener;
 
-    @Builder
-    private JLMapView(@NonNull JLProperties.MapType mapType,
-                      @NonNull JLLatLng startCoordinate, boolean showZoomController) {
-        super(JLMapOption.builder()
-                .startCoordinate(startCoordinate)
-                .mapType(mapType)
-                .additionalParameter(Set.of(new JLMapOption.Parameter("zoomControl",
-                        Objects.toString(showZoomController))))
-                .build());
-        this.webView = new WebView();
-        this.jlMapCallbackHandler = new JLMapCallbackHandler(this);
-        initialize();
+    private void removeMapBlur() {
+        Transition gt = new MapTransition(webView);
+        gt.play();
     }
 
     private void initialize() {
@@ -134,20 +140,21 @@ public class JLMapView extends JLMapController {
         }
     }
 
-    private void removeMapBlur() {
-        Transition gt = new Transition() {
-            {
-                setCycleDuration(Duration.millis(2000));
-                setInterpolator(Interpolator.EASE_IN);
-            }
+    @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+    private static class MapTransition extends Transition {
+        WebView webView;
 
-            @Override
-            protected void interpolate(double frac) {
-                GaussianBlur eff = ((GaussianBlur) webView.getEffect());
-                eff.setRadius(JLProperties.START_ANIMATION_RADIUS * (1 - frac));
-            }
-        };
-        gt.play();
+        public MapTransition(WebView webView) {
+            this.webView = webView;
+            setCycleDuration(Duration.millis(2000));
+            setInterpolator(Interpolator.EASE_IN);
+        }
+
+        @Override
+        protected void interpolate(double frac) {
+            GaussianBlur eff = ((GaussianBlur) webView.getEffect());
+            eff.setRadius(JLProperties.START_ANIMATION_RADIUS * (1 - frac));
+        }
     }
 
     private void setBlurEffectForMap() {
