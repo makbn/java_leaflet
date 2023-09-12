@@ -20,7 +20,7 @@ jobs:
 
   publish:
     needs: [ "build" ]
-    if: contains(github.ref_name, 'dev/')
+    if: contains(github.ref_name, 'release/')
     permissions:
       contents: read
       packages: write
