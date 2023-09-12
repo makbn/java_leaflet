@@ -60,27 +60,33 @@ abstract class JLMapController extends AnchorPane {
 
     /**
      * Sets the view of the map (geographical center).
-     * @param latLng Represents a geographical point with a certain latitude and longitude.
+     * @param latLng Represents a geographical point with a certain latitude
+     *               and longitude.
      */
     public void setView(JLLatLng latLng){
         checkMapState();
         getWebView().getEngine()
-                .executeScript(String.format("jlmap.panTo([%f, %f]);", latLng.getLat(), latLng.getLng()));
+                .executeScript(String.format("jlmap.panTo([%f, %f]);",
+                        latLng.getLat(), latLng.getLng()));
     }
 
     /**
      * Sets the view of the map (geographical center) with animation duration.
      * @param duration Represents the duration of transition animation.
-     * @param latLng Represents a geographical point with a certain latitude and longitude.
+     * @param latLng Represents a geographical point with a certain latitude
+     *               and longitude.
      */
     public void setView(JLLatLng latLng, int duration){
         checkMapState();
         getWebView().getEngine()
-                .executeScript(String.format("setLatLng(%f, %f,%d);", latLng.getLat(), latLng.getLng(), duration));
+                .executeScript(String.format("setLatLng(%f, %f,%d);",
+                        latLng.getLat(), latLng.getLng(), duration));
     }
 
     private void checkMapState() {
-        if(getWebView() == null || getWebView().getEngine().getLoadWorker().getState() != Worker.State.SUCCEEDED){
+        if(getWebView() == null ||
+                getWebView().getEngine()
+                .getLoadWorker().getState() != Worker.State.SUCCEEDED){
             throw JLMapNotReadyException.builder().build();
         }
     }

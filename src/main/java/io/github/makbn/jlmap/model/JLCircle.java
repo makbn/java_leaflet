@@ -13,7 +13,8 @@ import lombok.*;
 @ToString
 public class JLCircle extends JLObject<JLCircle> {
     /**
-     * id of object! this is an internal id for JLMap Application and not related to Leaflet!
+     * id of object! this is an internal id for JLMap Application and not
+     * related to Leaflet!
      */
     protected int id;
     /**

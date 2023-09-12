@@ -26,7 +26,8 @@ public class JLGeoJsonLayer extends JLLayer implements LeafletGeoJsonLayerInt {
     JLGeoJsonContent fromContent;
     JSObject window;
 
-    public JLGeoJsonLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
+    public JLGeoJsonLayer(WebEngine engine,
+                          JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
         this.fromUrl = new JLGeoJsonURL();
         this.fromFile = new JLGeoJsonFile();
@@ -47,21 +48,24 @@ public class JLGeoJsonLayer extends JLLayer implements LeafletGeoJsonLayerInt {
     }
 
     @Override
-    public JLGeoJsonObject addFromContent(@NonNull String content) throws JLException {
+    public JLGeoJsonObject addFromContent(@NonNull String content)
+            throws JLException {
         String json = fromContent.load(content);
         return addGeoJson(json);
     }
 
     @Override
     public boolean removeGeoJson(@NonNull JLGeoJsonObject object) {
-        return Boolean.parseBoolean(engine.executeScript(String.format("removeGeoJson(%d)", object.getId())).toString());
+        return Boolean.parseBoolean(engine.executeScript(
+                String.format("removeGeoJson(%d)", object.getId())).toString());
     }
 
     private JLGeoJsonObject addGeoJson(String jlGeoJsonObject) {
         try {
             String identifier = MEMBER_PREFIX + UUID.randomUUID();
             this.window.setMember(identifier, jlGeoJsonObject);
-            String returnedId = engine.executeScript(String.format("addGeoJson(\"%s\")", identifier)).toString();
+            String returnedId = engine.executeScript(
+                    String.format("addGeoJson(\"%s\")", identifier)).toString();
 
             return JLGeoJsonObject.builder()
                     .id(Integer.parseInt(returnedId))

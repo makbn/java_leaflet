@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * Represents the basic layer.
+ *
  * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 @FieldDefaults(level = AccessLevel.PROTECTED)
@@ -20,9 +21,10 @@ public abstract class JLLayer {
     }
 
     /**
-     * Forces the subclasses to implement {@link #JLLayer(WebEngine, JLMapCallbackHandler)} constructor!
+     * Forces the subclasses to implement
+     * {@link #JLLayer(WebEngine, JLMapCallbackHandler)} constructor!
      */
-    private JLLayer(){
+    private JLLayer() {
         // NO-OP
     }
 }

@@ -56,11 +56,13 @@ public class JLMapView extends JLMapController {
     OnJLMapViewListener mapListener;
 
     @Builder
-    private JLMapView(@NonNull JLProperties.MapType mapType, @NonNull JLLatLng startCoordinate, boolean showZoomController) {
+    private JLMapView(@NonNull JLProperties.MapType mapType,
+                      @NonNull JLLatLng startCoordinate, boolean showZoomController) {
         super(JLMapOption.builder()
                 .startCoordinate(startCoordinate)
                 .mapType(mapType)
-                .additionalParameter(Set.of(new JLMapOption.Parameter("zoomControl", Objects.toString(showZoomController))))
+                .additionalParameter(Set.of(new JLMapOption.Parameter("zoomControl",
+                        Objects.toString(showZoomController))))
                 .build());
         this.webView = new WebView();
         this.jlMapCallbackHandler = new JLMapCallbackHandler(this);

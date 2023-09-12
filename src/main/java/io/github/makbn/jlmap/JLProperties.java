@@ -29,22 +29,6 @@ public class JLProperties {
         public static final MapType OSM_MAPNIK = new MapType("OpenStreetMap.Mapnik");
         public static final MapType OSM_HOT = new MapType("OpenStreetMap.HOT");
         public static final MapType OPEN_TOPO = new MapType("OpenTopoMap");
-        public static final MapType STADIA_ALIDADE_SMOOTH_LIGHT = new MapType("Stadia.AlidadeSmooth");
-        public static final MapType STADIA_ALIDADE_SMOOTH_DARK = new MapType("Stadia.AlidadeSmoothDark");
-        public static final MapType STADIA_OSM_BRIGHT = new MapType("Stadia.OSMBright");
-        public static final MapType STADIA_WATERCOLOR = new MapType("Stadia.StamenWatercolor");
-        public static final MapType STADIA_STAMEN_TONER_LITE = new MapType("Stadia.StamenTonerLite");
-        public static final MapType STADIA_STAMEN_TERRAIN = new MapType("Stadia.StamenTerrain");
-
-        public static final MapType OPNV_KARTE = new MapType("OPNVKarte");
-        public static final MapType THUNDERFOREST_CYCLE = new MapType("Thunderforest.OpenCycleMap");
-        public static final MapType THUNDERFOREST_TRANSPORT = new MapType("Thunderforest.Transport");
-        public static final MapType THUNDERFOREST_SPINAL = new MapType("Thunderforest.SpinalMap");
-
-        public static final MapType JAWG_TERRAIN = new MapType("Jawg.Terrain");
-        public static final MapType JAWG_LIGHT = new MapType("Jawg.Light");
-        public static final MapType JAWG_DARK = new MapType("Jawg.Dark");
-        public static final MapType JAWG_MATRIX = new MapType("Jawg.Matrix");
 
         public static MapType getDefault() {
             return OSM_MAPNIK;
