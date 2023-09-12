@@ -12,17 +12,16 @@ import io.github.makbn.jlmap.model.JLLatLng;
  * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 public interface LeafletControlLayerInt {
-    public static final double ZOOM_DELTA = 1;
 
     /**
-     * Increases the zoom of the map by delta ({@link #ZOOM_DELTA} by default).
+     * Increases the zoom of the map by delta 
      *
      * @see <a href="https://leafletjs.com/reference.html#map-zoomin">leafletjs.com/reference.html#map-zoomin</a>
      */
     void zoomIn(int delta);
 
     /**
-     * Decreases the zoom of the map by delta ({@link #ZOOM_DELTA} by default).
+     * Decreases the zoom of the map by delta 
      *
      * @see <a href="https://leafletjs.com/reference.html#map-zoomout">
      *     leafletjs.com/reference.html#map-zoomout</a>
