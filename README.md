@@ -13,6 +13,21 @@ Java wrapper for Leaflet, JavaScript library for mobile-friendly interactive map
 
 ## Getting start
 
+Since you are working on JavaFX application you know you need to have the JavaFX runtime. 
+Read more about installing JavaFx:
+* https://openjfx.io/openjfx-docs/#introduction
+
+To run the [Leaflet example](src/test/java/io/github/makbn/jlmap/Leaflet.java) class you need to set the module path
+as VM options:
+
+```java
+--module-path [PATH_TO_JAVA_FX_LIB_FOLDER]
+        --add-exports javafx.web/com.sun.javafx.webkit=ALL-UNNAMED
+        --add-modules=javafx.graphics,javafx.web
+```
+
+There is an issue with JavaFX v17.X javafx.web engine and OSM tiles, I tried JavaFX v19.0.2.1 and it works fine!
+
 First, you need to initialize an instance of `JLMapView`:
 
 ```java
