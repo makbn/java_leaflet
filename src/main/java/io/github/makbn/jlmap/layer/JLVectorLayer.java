@@ -13,12 +13,14 @@ import javafx.scene.web.WebEngine;
  */
 public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
 
-    public JLVectorLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
+    public JLVectorLayer(WebEngine engine,
+                         JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
     }
 
     /**
-     * Drawing polyline overlays on the map with {{@link JLOptions#DEFAULT}} options
+     * Drawing polyline overlays on the map with {@link JLOptions#DEFAULT}
+     * options
      *
      * @see JLVectorLayer#addPolyline(JLLatLng[], JLOptions)
      */
@@ -38,8 +40,12 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
     public JLPolyline addPolyline(JLLatLng[] vertices, JLOptions options) {
         String latlngs = convertJLLatLngToString(vertices);
         String hexColor = convertColorToString(options.getColor());
-        String result = engine.executeScript(String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)", latlngs, hexColor,
-                options.getWeight(), options.isStroke(), options.getOpacity(), options.getSmoothFactor())).toString();
+        String result = engine.executeScript(
+                        String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)",
+                                latlngs, hexColor, options.getWeight(),
+                                options.isStroke(), options.getOpacity(),
+                                options.getSmoothFactor()))
+                .toString();
 
         int index = Integer.parseInt(result);
         JLPolyline polyline = new JLPolyline(index, options, vertices);
@@ -55,8 +61,8 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
      */
     @Override
     public boolean removePolyline(int id) {
-        String result = engine.executeScript(String.format("removePolyLine(%d)", id))
-                .toString();
+        String result = engine.executeScript(
+                String.format("removePolyLine(%d)", id)).toString();
 
         callbackHandler.remove(JLPolyline.class, id);
         callbackHandler.remove(JLMultiPolyline.class, id);
@@ -65,7 +71,8 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
     }
 
     /**
-     * Drawing multi polyline overlays on the map with {@link JLOptions#DEFAULT} options.
+     * Drawing multi polyline overlays on the map with
+     * {@link JLOptions#DEFAULT} options.
      *
      * @return the added {@link JLMultiPolyline}  to map
      * @see JLVectorLayer#addMultiPolyline(JLLatLng[][], JLOptions)
@@ -76,21 +83,28 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
     }
 
     /**
-     * Drawing MultiPolyline shape overlays on the map with multi-dimensional array.
+     * Drawing MultiPolyline shape overlays on the map with
+     * multi-dimensional array.
      *
      * @param vertices arrays of LatLng points
      * @param options  see {@link JLOptions} for customizing
      * @return the added {@link JLMultiPolyline}  to map
      */
     @Override
-    public JLMultiPolyline addMultiPolyline(JLLatLng[][] vertices, JLOptions options) {
+    public JLMultiPolyline addMultiPolyline(JLLatLng[][] vertices,
+                                            JLOptions options) {
         String latlngs = convertJLLatLngToString(vertices);
         String hexColor = convertColorToString(options.getColor());
-        String result = engine.executeScript(String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)", latlngs, hexColor,
-                options.getWeight(), options.isStroke(), options.getOpacity(), options.getSmoothFactor())).toString();
+        String result = engine.executeScript(
+                        String.format("addPolyLine(%s, '%s', %d, %b, %f, %f)",
+                                latlngs, hexColor, options.getWeight(),
+                                options.isStroke(), options.getOpacity(),
+                                options.getSmoothFactor()))
+                .toString();
 
         int index = Integer.parseInt(result);
-        JLMultiPolyline multiPolyline = new JLMultiPolyline(index, options, vertices);
+        JLMultiPolyline multiPolyline =
+                new JLMultiPolyline(index, options, vertices);
         callbackHandler.addJLObject(multiPolyline);
         return multiPolyline;
     }
@@ -121,9 +135,12 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
     public JLPolygon addPolygon(JLLatLng[][][] vertices, JLOptions options) {
         String latlngs = convertJLLatLngToString(vertices);
 
-        String result = engine.executeScript(String.format("addPolygon(%s, '%s', '%s', %d, %b, %b, %f, %f, %f)",
-                        latlngs, convertColorToString(options.getColor()), convertColorToString(options.getFillColor()),
-                        options.getWeight(), options.isStroke(), options.isFill(), options.getOpacity(),
+        String result = engine.executeScript(String.format(
+                        "addPolygon(%s, '%s', '%s', %d, %b, %b, %f, %f, %f)",
+                        latlngs, convertColorToString(options.getColor()),
+                        convertColorToString(options.getFillColor()),
+                        options.getWeight(), options.isStroke(),
+                        options.isFill(), options.getOpacity(),
                         options.getFillOpacity(), options.getSmoothFactor()))
                 .toString();
 
@@ -134,7 +151,8 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
     }
 
     /**
-     * Drawing polygon overlays on the map with {{@link JLOptions#DEFAULT}} option.
+     * Drawing polygon overlays on the map with {@link JLOptions#DEFAULT}
+     * option.
      *
      * @see JLVectorLayer#addMultiPolyline(JLLatLng[][], JLOptions)
      */
@@ -151,8 +169,8 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
      */
     @Override
     public boolean removePolygon(int id) {
-        String result = engine.executeScript(String.format("removePolygon(%d)", id))
-                .toString();
+        String result = engine.executeScript(
+                String.format("removePolygon(%d)", id)).toString();
         callbackHandler.remove(JLPolygon.class, id);
         return Boolean.parseBoolean(result);
     }
@@ -167,9 +185,13 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
      */
     @Override
     public JLCircle addCircle(JLLatLng center, int radius, JLOptions options) {
-        String result = engine.executeScript(String.format("addCircle([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
-                        center.getLat(), center.getLng(), radius, convertColorToString(options.getColor()), convertColorToString(options.getFillColor()),
-                        options.getWeight(), options.isStroke(), options.isFill(), options.getOpacity(),
+        String result = engine.executeScript(String.format(
+                        "addCircle([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
+                        center.getLat(), center.getLng(), radius,
+                        convertColorToString(options.getColor()),
+                        convertColorToString(options.getFillColor()),
+                        options.getWeight(), options.isStroke(),
+                        options.isFill(), options.getOpacity(),
                         options.getFillOpacity(), options.getSmoothFactor()))
                 .toString();
 
@@ -187,7 +209,8 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
      */
     @Override
     public JLCircle addCircle(JLLatLng center) {
-        return addCircle(center, JLProperties.DEFAULT_CIRCLE_RADIUS, JLOptions.DEFAULT);
+        return addCircle(center, JLProperties.DEFAULT_CIRCLE_RADIUS,
+                JLOptions.DEFAULT);
     }
 
     /**
@@ -213,28 +236,36 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
      * @return the instance of created {@link JLCircleMarker}
      */
     @Override
-    public JLCircleMarker addCircleMarker(JLLatLng center, int radius, JLOptions options) {
-        String result = engine.executeScript(String.format("addCircleMarker([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
-                        center.getLat(), center.getLng(), radius, convertColorToString(options.getColor()), convertColorToString(options.getFillColor()),
-                        options.getWeight(), options.isStroke(), options.isFill(), options.getOpacity(),
+    public JLCircleMarker addCircleMarker(JLLatLng center, int radius,
+                                          JLOptions options) {
+        String result = engine.executeScript(String.format(
+                        "addCircleMarker([%f, %f], %d, '%s', '%s', %d, %b, %b, %f, %f, %f)",
+                        center.getLat(), center.getLng(), radius,
+                        convertColorToString(options.getColor()),
+                        convertColorToString(options.getFillColor()),
+                        options.getWeight(), options.isStroke(),
+                        options.isFill(), options.getOpacity(),
                         options.getFillOpacity(), options.getSmoothFactor()))
                 .toString();
 
         int index = Integer.parseInt(result);
-        JLCircleMarker circleMarker = new JLCircleMarker(index, radius, center, options);
+        JLCircleMarker circleMarker =
+                new JLCircleMarker(index, radius, center, options);
         callbackHandler.addJLObject(circleMarker);
         return circleMarker;
     }
 
     /**
-     * Add {@link JLCircleMarker} to the map with {@link JLOptions#DEFAULT} options.
-     * Default value for radius is {@link JLProperties#DEFAULT_CIRCLE_MARKER_RADIUS}
+     * Add {@link JLCircleMarker} to the map with {@link JLOptions#DEFAULT}
+     * options. Default value for radius is
+     * {@link JLProperties#DEFAULT_CIRCLE_MARKER_RADIUS}
      *
      * @see JLVectorLayer#addCircle(JLLatLng, int, JLOptions)
      */
     @Override
     public JLCircleMarker addCircleMarker(JLLatLng center) {
-        return addCircleMarker(center, JLProperties.DEFAULT_CIRCLE_MARKER_RADIUS, JLOptions.DEFAULT);
+        return addCircleMarker(center,
+                JLProperties.DEFAULT_CIRCLE_MARKER_RADIUS, JLOptions.DEFAULT);
     }
 
 
@@ -246,8 +277,8 @@ public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
      */
     @Override
     public boolean removeCircleMarker(int id) {
-        String result = engine.executeScript(String.format("removeCircleMarker(%d)", id))
-                .toString();
+        String result = engine.executeScript(
+                String.format("removeCircleMarker(%d)", id)).toString();
         callbackHandler.remove(JLCircleMarker.class, id);
         return Boolean.parseBoolean(result);
     }

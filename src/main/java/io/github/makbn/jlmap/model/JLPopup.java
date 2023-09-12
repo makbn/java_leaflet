@@ -12,7 +12,10 @@ import lombok.*;
 @Builder
 @ToString
 public class JLPopup {
-    /** id of JLPopup! this is an internal id for JLMap Application and not related to Leaflet! */
+    /**
+     * id of JLPopup! this is an internal id for JLMap Application and not
+     * related to Leaflet!
+     */
     private int id;
     /** Content of the popup.*/
     private String text;

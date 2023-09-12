@@ -85,8 +85,8 @@ public class JLBounds {
      * Useful for sending requests to web services that return geo data.
      */
     public String toBBoxString() {
-        return String.format("%f,%f,%f,%f", southWest.getLng(), southWest.getLat(),
-                northEast.getLng(), northEast.getLat());
+        return String.format("%f,%f,%f,%f", southWest.getLng(),
+                southWest.getLat(), northEast.getLng(), northEast.getLat());
     }
 
     /**
@@ -120,23 +120,29 @@ public class JLBounds {
 
     /**
      * @param bufferRatio extending or retracting value
-     * @return bounds created by extending or retracting the current bounds by a given ratio
-     * in each direction. For example, a ratio of 0.5 extends the bounds by 50% in each direction.
+     * @return bounds created by extending or retracting the current bounds
+     * by a given ratio in each direction. For example, a ratio of 0.5 extends
+     * the bounds by 50% in each direction.
      * Negative values will retract the bounds.
      */
     public JLBounds pad(double bufferRatio) {
-        double latBuffer = Math.abs(southWest.getLat() - northEast.getLat()) * bufferRatio;
-        double lngBuffer = Math.abs(southWest.getLng() - northEast.getLng()) * bufferRatio;
+        double latBuffer =
+                Math.abs(southWest.getLat() - northEast.getLat()) * bufferRatio;
+        double lngBuffer =
+                Math.abs(southWest.getLng() - northEast.getLng()) * bufferRatio;
 
         return new JLBounds(
-                new JLLatLng(southWest.getLat() - latBuffer, southWest.getLng() - lngBuffer),
-                new JLLatLng(northEast.getLat() + latBuffer, northEast.getLng() + lngBuffer));
+                new JLLatLng(southWest.getLat() - latBuffer,
+                        southWest.getLng() - lngBuffer),
+                new JLLatLng(northEast.getLat() + latBuffer,
+                        northEast.getLng() + lngBuffer));
     }
 
     /**
      * @param bounds    the given bounds
      * @param maxMargin The margin of error
-     * @return true if the rectangle is equivalent (within a small margin of error) to the given bounds.
+     * @return true if the rectangle is equivalent
+     * (within a small margin of error) to the given bounds.
      */
     public boolean equals(JLBounds bounds, float maxMargin) {
         if (bounds == null) {

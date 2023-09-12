@@ -13,7 +13,8 @@ import lombok.*;
 @ToString
 public class JLMultiPolyline extends JLObject<JLMultiPolyline> {
     /**
-     * id of JLMultiPolyline! this is an internal id for JLMap Application and not related to Leaflet!
+     * id of JLMultiPolyline! this is an internal id for JLMap Application
+     * and not related to Leaflet!
      */
     private int id;
     /**
@@ -21,7 +22,8 @@ public class JLMultiPolyline extends JLObject<JLMultiPolyline> {
      */
     private JLOptions options;
     /**
-     * The array of {{@link io.github.makbn.jlmap.model.JLLatLng}} points of JLMultiPolyline
+     * The array of {@link io.github.makbn.jlmap.model.JLLatLng} points
+     * of JLMultiPolyline
      */
     private JLLatLng[][] vertices;
 }

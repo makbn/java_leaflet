@@ -18,7 +18,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class JLMarker extends JLObject<JLMarker> {
     /**
-     * id of object! this is an internal id for JLMap Application and not related to Leaflet!
+     * id of object! this is an internal id for JLMap Application and not
+     * related to Leaflet!
      */
     protected int id;
     /**
@@ -35,7 +36,8 @@ public class JLMarker extends JLObject<JLMarker> {
     public void update(Object... params) {
         super.update(params);
         if (params != null && params.length > 0
-                && String.valueOf(params[0]).equals(OnJLObjectActionListener.Action.MOVE_END.getJsEventName())
+                && String.valueOf(params[0]).equals(
+                OnJLObjectActionListener.Action.MOVE_END.getJsEventName())
                 && params[1] != null) {
             latLng = (JLLatLng) params[1];
         }

@@ -8,10 +8,12 @@ import javafx.scene.web.WebEngine;
 
 /**
  * Represents the Control layer on Leaflet map.
+ *
  * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 public class JLControlLayer extends JLLayer implements LeafletControlLayerInt {
-    public JLControlLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
+    public JLControlLayer(WebEngine engine,
+                          JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
     }
 
@@ -32,12 +34,15 @@ public class JLControlLayer extends JLLayer implements LeafletControlLayerInt {
 
     @Override
     public void setZoomAround(JLLatLng latLng, int zoom) {
-        engine.executeScript(String.format("getMap().setZoomAround(L.latLng(%f, %f), %d)", latLng.getLat(), latLng.getLng(), zoom));
+        engine.executeScript(
+                String.format("getMap().setZoomAround(L.latLng(%f, %f), %d)",
+                        latLng.getLat(), latLng.getLng(), zoom));
     }
 
     @Override
     public void fitBounds(JLBounds bounds) {
-        engine.executeScript(String.format("getMap().fitBounds(%s)", bounds.toString()));
+        engine.executeScript(String.format("getMap().fitBounds(%s)",
+                bounds.toString()));
     }
 
     @Override
@@ -47,22 +52,27 @@ public class JLControlLayer extends JLLayer implements LeafletControlLayerInt {
 
     @Override
     public void panTo(JLLatLng latLng) {
-        engine.executeScript(String.format("getMap().panTo(L.latLng(%f, %f))", latLng.getLat(), latLng.getLng()));
+        engine.executeScript(String.format("getMap().panTo(L.latLng(%f, %f))",
+                latLng.getLat(), latLng.getLng()));
     }
 
     @Override
     public void flyTo(JLLatLng latLng, int zoom) {
-        engine.executeScript(String.format("getMap().flyTo(L.latLng(%f, %f), %d)", latLng.getLat(), latLng.getLng(), zoom));
+        engine.executeScript(
+                String.format("getMap().flyTo(L.latLng(%f, %f), %d)",
+                        latLng.getLat(), latLng.getLng(), zoom));
     }
 
     @Override
     public void flyToBounds(JLBounds bounds) {
-        engine.executeScript(String.format("getMap().flyToBounds(%s)", bounds.toString()));
+        engine.executeScript(String.format("getMap().flyToBounds(%s)",
+                bounds.toString()));
     }
 
     @Override
     public void setMaxBounds(JLBounds bounds) {
-        engine.executeScript(String.format("getMap().setMaxBounds(%s)", bounds.toString()));
+        engine.executeScript(String.format("getMap().setMaxBounds(%s)",
+                bounds.toString()));
     }
 
     @Override
@@ -77,11 +87,14 @@ public class JLControlLayer extends JLLayer implements LeafletControlLayerInt {
 
     @Override
     public void panInsideBounds(JLBounds bounds) {
-        engine.executeScript(String.format("getMap().panInsideBounds(%s)", bounds.toString()));
+        engine.executeScript(String.format("getMap().panInsideBounds(%s)",
+                bounds.toString()));
     }
 
     @Override
     public void panInside(JLLatLng latLng) {
-        engine.executeScript(String.format("getMap().panInside(L.latLng(%f, %f))", latLng.getLat(), latLng.getLng()));
+        engine.executeScript(
+                String.format("getMap().panInside(L.latLng(%f, %f))",
+                        latLng.getLat(), latLng.getLng()));
     }
 }
