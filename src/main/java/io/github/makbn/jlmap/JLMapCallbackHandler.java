@@ -9,33 +9,38 @@ import io.github.makbn.jlmap.listener.event.ZoomEvent;
 import io.github.makbn.jlmap.model.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * @author Mehdi Akbarian Rastaghi (@makbn)
  */
-@Log4j2
+@Slf4j
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class JLMapCallbackHandler implements Serializable {
-
-    transient JLMapView mapView;
+    private static final String FUNCTION_MOVE = "move";
+    private static final String FUNCTION_CLICK = "click";
+    private static final String FUNCTION_ZOOM = "zoom";
+    private static final String FUNCTION_MOVE_START = "movestart";
+    private static final String FUNCTION_MOVE_END = "moveend";
+    transient OnJLMapViewListener listener;
     transient HashMap<Class<? extends JLObject<?>>, HashMap<Integer, JLObject<?>>> jlObjects;
     transient Gson gson;
     HashMap<String, Class<? extends JLObject<?>>[]> classMap;
 
-    public JLMapCallbackHandler(JLMapView mapView) {
-        this.mapView = mapView;
+    public JLMapCallbackHandler(OnJLMapViewListener listener) {
+        this.listener = listener;
         this.jlObjects = new HashMap<>();
         this.gson = new Gson();
         this.classMap = new HashMap<>();
         initClassMap();
     }
+
     @SuppressWarnings("unchecked")
     private void initClassMap() {
-
         classMap.put("marker", new Class[]{JLMarker.class});
         classMap.put("marker_circle", new Class[]{JLCircleMarker.class});
         classMap.put("polyline", new Class[]{JLPolyline.class, JLMultiPolyline.class});
@@ -50,7 +55,7 @@ public class JLMapCallbackHandler implements Serializable {
      * @param param4       additional param
      * @param param5       additional param
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public void functionCalled(String functionName, Object param1, Object param2,
                                Object param3, Object param4, Object param5) {
         log.debug(String.format("function: %s \tparam1: %s \tparam2: %s " +
@@ -87,33 +92,32 @@ public class JLMapCallbackHandler implements Serializable {
                             return;
                     }
                 }
-            } else if (param1.equals("main_map")
-                    && mapView.getMapListener().isPresent()) {
+            } else if (param1.equals("main_map") && getMapListener().isPresent()) {
                 switch (functionName) {
-                    case "move" -> mapView.getMapListener()
+                    case FUNCTION_MOVE -> getMapListener()
                             .get()
                             .onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE,
                                     gson.fromJson(String.valueOf(param4), JLLatLng.class),
                                     gson.fromJson(String.valueOf(param5), JLBounds.class),
                                     Integer.parseInt(String.valueOf(param3))));
-                    case "movestart" -> mapView.getMapListener()
+                    case FUNCTION_MOVE_START -> getMapListener()
                             .get()
                             .onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE_START,
                                     gson.fromJson(String.valueOf(param4), JLLatLng.class),
                                     gson.fromJson(String.valueOf(param5), JLBounds.class),
                                     Integer.parseInt(String.valueOf(param3))));
-                    case "moveend" -> mapView.getMapListener()
+                    case FUNCTION_MOVE_END -> getMapListener()
                             .get()
                             .onAction(new MoveEvent(OnJLMapViewListener.Action.MOVE_END,
                                     gson.fromJson(String.valueOf(param4), JLLatLng.class),
                                     gson.fromJson(String.valueOf(param5), JLBounds.class),
                                     Integer.parseInt(String.valueOf(param3))));
-                    case "click" -> mapView.getMapListener()
+                    case FUNCTION_CLICK -> getMapListener()
                             .get()
                             .onAction(new ClickEvent(gson.fromJson(String.valueOf(param3),
                                     JLLatLng.class)));
 
-                    case "zoom" -> mapView.getMapListener()
+                    case FUNCTION_ZOOM -> getMapListener()
                             .get()
                             .onAction(new ZoomEvent(OnJLMapViewListener.Action.ZOOM,
                                     Integer.parseInt(String.valueOf(param3))));
@@ -121,36 +125,36 @@ public class JLMapCallbackHandler implements Serializable {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
     }
 
     private boolean callListenerOnObject(
             String functionName, JLObject<JLObject<?>> jlObject, Object... params) {
         switch (functionName) {
-            case "move" -> {
+            case FUNCTION_MOVE -> {
                 jlObject.getOnActionListener()
                         .move(jlObject, OnJLObjectActionListener.Action.MOVE);
                 return true;
             }
-            case "movestart" -> {
+            case FUNCTION_MOVE_START -> {
                 jlObject.getOnActionListener()
                         .move(jlObject, OnJLObjectActionListener.Action.MOVE_START);
                 return true;
             }
-            case "moveend" -> {
+            case FUNCTION_MOVE_END -> {
                 //update coordinate of the JLObject
-                jlObject.update("moveend", gson.fromJson(String.valueOf(params[3]), JLLatLng.class));
+                jlObject.update(FUNCTION_MOVE_END, gson.fromJson(String.valueOf(params[3]), JLLatLng.class));
                 jlObject.getOnActionListener()
                         .move(jlObject, OnJLObjectActionListener.Action.MOVE_END);
                 return true;
             }
-            case "click" -> {
+            case FUNCTION_CLICK -> {
                 jlObject.getOnActionListener()
                         .click(jlObject, OnJLObjectActionListener.Action.CLICK);
                 return true;
             }
-            default -> log.error(functionName + " not implemented!");
+            default -> log.error("{} not implemented!", functionName);
         }
         return false;
     }
@@ -171,7 +175,10 @@ public class JLMapCallbackHandler implements Serializable {
         if (!jlObjects.containsKey(targetClass))
             return;
         JLObject<?> object = jlObjects.get(targetClass).remove(id);
-        if (object != null)
-            log.error(targetClass.getSimpleName() + " id:" + object.getId() + " removed");
+        if (object != null) log.error("{} id: {} removed", targetClass.getSimpleName(), object.getId());
+    }
+
+    private Optional<OnJLMapViewListener> getMapListener() {
+        return Optional.ofNullable(listener);
     }
 }

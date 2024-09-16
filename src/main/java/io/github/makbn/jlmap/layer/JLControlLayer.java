@@ -1,10 +1,10 @@
 package io.github.makbn.jlmap.layer;
 
 import io.github.makbn.jlmap.JLMapCallbackHandler;
+import io.github.makbn.jlmap.engine.JLWebEngine;
 import io.github.makbn.jlmap.layer.leaflet.LeafletControlLayerInt;
 import io.github.makbn.jlmap.model.JLBounds;
 import io.github.makbn.jlmap.model.JLLatLng;
-import javafx.scene.web.WebEngine;
 
 /**
  * Represents the Control layer on Leaflet map.
@@ -12,7 +12,7 @@ import javafx.scene.web.WebEngine;
  * @author Mehdi Akbarian Rastaghi (@makbn)
  */
 public class JLControlLayer extends JLLayer implements LeafletControlLayerInt {
-    public JLControlLayer(WebEngine engine,
+    public JLControlLayer(JLWebEngine engine,
                           JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
     }

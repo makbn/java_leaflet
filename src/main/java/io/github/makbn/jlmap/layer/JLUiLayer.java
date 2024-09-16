@@ -1,12 +1,12 @@
 package io.github.makbn.jlmap.layer;
 
 import io.github.makbn.jlmap.JLMapCallbackHandler;
+import io.github.makbn.jlmap.engine.JLWebEngine;
 import io.github.makbn.jlmap.layer.leaflet.LeafletUILayerInt;
 import io.github.makbn.jlmap.model.JLLatLng;
 import io.github.makbn.jlmap.model.JLMarker;
 import io.github.makbn.jlmap.model.JLOptions;
 import io.github.makbn.jlmap.model.JLPopup;
-import javafx.scene.web.WebEngine;
 
 /**
  * Represents the UI layer on Leaflet map.
@@ -15,7 +15,7 @@ import javafx.scene.web.WebEngine;
  */
 public class JLUiLayer extends JLLayer implements LeafletUILayerInt {
 
-    public JLUiLayer(WebEngine engine, JLMapCallbackHandler callbackHandler) {
+    public JLUiLayer(JLWebEngine engine, JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
     }
 
