@@ -1,5 +1,7 @@
-package io.github.makbn.jlmap;
+package io.github.makbn.jlmap.demo;
 
+import io.github.makbn.jlmap.JLMapView;
+import io.github.makbn.jlmap.JLProperties;
 import io.github.makbn.jlmap.geojson.JLGeoJsonObject;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
 import io.github.makbn.jlmap.listener.OnJLObjectActionListener;

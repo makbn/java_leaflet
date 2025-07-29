@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test to verify that the Java Platform Module System is working correctly.
  */
-public class ModuleSystemTest {
+class ModuleSystemTest {
 
     @Test
-    public void testModuleSystemWorking() {
+    void testModuleSystemWorking() {
         // Test that we can create basic objects from the module
         JLLatLng latLng = JLLatLng.builder()
                 .lat(51.044)
@@ -33,7 +33,7 @@ public class ModuleSystemTest {
     }
     
     @Test
-    public void testModuleInfoAccessible() {
+    void testModuleInfoAccessible() {
         // Test that module-info.java is properly processed
         Module module = JLMapView.class.getModule();
         assertNotNull(module);

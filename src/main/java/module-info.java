@@ -22,16 +22,20 @@ module io.github.makbn.jlmap {
 
     // Exports for public API
     exports io.github.makbn.jlmap;
+    exports io.github.makbn.jlmap.demo;
     exports io.github.makbn.jlmap.layer;
     exports io.github.makbn.jlmap.layer.leaflet;
     exports io.github.makbn.jlmap.listener;
     exports io.github.makbn.jlmap.model;
     exports io.github.makbn.jlmap.exception;
     exports io.github.makbn.jlmap.geojson;
+    exports io.github.makbn.jlmap.engine;
 
     // Opens for reflection (if needed by frameworks)
     opens io.github.makbn.jlmap to javafx.graphics;
     opens io.github.makbn.jlmap.layer to javafx.graphics;
     opens io.github.makbn.jlmap.model to javafx.graphics;
     opens io.github.makbn.jlmap.geojson to javafx.graphics;
+    opens io.github.makbn.jlmap.engine to javafx.graphics;
+    opens io.github.makbn.jlmap.demo to javafx.graphics;
 } 

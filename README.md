@@ -72,7 +72,7 @@ Add the following dependency to your `pom.xml`:
 When running your application, ensure you include the module in your module path:
 
 ```bash
-java --module-path /path/to/jlmap-1.9.5.jar --add-modules io.github.makbn.jlmap your.main.Class
+mvn javafx:run
 ```
 
 ## Quick Start
