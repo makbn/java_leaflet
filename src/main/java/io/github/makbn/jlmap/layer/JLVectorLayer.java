@@ -2,10 +2,10 @@ package io.github.makbn.jlmap.layer;
 
 import io.github.makbn.jlmap.JLMapCallbackHandler;
 import io.github.makbn.jlmap.JLProperties;
+import io.github.makbn.jlmap.engine.JLWebEngine;
 import io.github.makbn.jlmap.layer.leaflet.LeafletVectorLayerInt;
 import io.github.makbn.jlmap.model.*;
 import javafx.scene.paint.Color;
-import javafx.scene.web.WebEngine;
 
 /**
  * Represents the Vector layer on Leaflet map.
@@ -13,7 +13,7 @@ import javafx.scene.web.WebEngine;
  */
 public class JLVectorLayer extends JLLayer implements LeafletVectorLayerInt {
 
-    public JLVectorLayer(WebEngine engine,
+    public JLVectorLayer(JLWebEngine engine,
                          JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
     }
