@@ -6,7 +6,7 @@
 
     <groupId>io.github.makbn</groupId>
     <artifactId>jlmap</artifactId>
-    <version>1.9.5</version>
+    <version>1.9.4</version>
     <packaging>jar</packaging>
     <name>Java Leaflet (JLeaflet)</name>
 
@@ -91,6 +91,19 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>io.github.makbn.jlmap.demo.LeafletTestJFX</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
@@ -102,6 +115,21 @@
                         --add-opens java.desktop/java.awt.font=ALL-UNNAMED
                         --add-opens javafx.web/com.sun.javafx.webkit=ALL-UNNAMED
                     </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>io.github.makbn.jlmap.demo.LeafletTestJFX</mainClass>
+                    <arguments>
+                        <argument>--module-path ${project.basedir}/../../sdk/javafx-sdk-17.0.16/lib</argument>
+                        <argument>--add-modules</argument>
+                        <argument>javafx.controls,javafx.base,javafx.swing,javafx.web,javafx.graphics,jdk.jsobject</argument>
+                        <argument>--add-opens</argument>
+                        <argument>javafx.web/com.sun.javafx.webkit=ALL-UNNAMED</argument>
+                    </arguments>
                 </configuration>
             </plugin>
         </plugins>
