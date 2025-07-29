@@ -1,6 +1,5 @@
 package io.github.makbn.jlmap;
 
-import com.sun.javafx.webkit.WebConsoleListener;
 import io.github.makbn.jlmap.layer.*;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
 import io.github.makbn.jlmap.model.JLLatLng;
@@ -99,8 +98,8 @@ public class JLMapView extends JLMapController {
             }
         });
 
-        WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceId)
-                -> log.error(String.format("sid: %s ln: %d m:%s", sourceId, lineNumber, message)));
+        // Note: WebConsoleListener is an internal JavaFX API and not available in the module system
+        // Web console logging is disabled for module compatibility
 
         File index = null;
         try (InputStream in = getClass().getResourceAsStream("/index.html")) {
