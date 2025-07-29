@@ -5,22 +5,21 @@ module io.github.makbn.jlmap {
     requires javafx.swing;
     requires javafx.web;
     requires javafx.graphics;
-    
+
     // JDK modules
     requires jdk.jsobject;
-    
+
     // Logging
-    requires org.apache.logging.log4j;
-    requires org.apache.logging.log4j.core;
-    
+    requires org.slf4j;
+
     // JSON processing
     requires com.google.gson;
     requires com.fasterxml.jackson.databind;
-    
+
     // Annotations
     requires static org.jetbrains.annotations;
     requires static lombok;
-    
+
     // Exports for public API
     exports io.github.makbn.jlmap;
     exports io.github.makbn.jlmap.layer;
@@ -29,7 +28,7 @@ module io.github.makbn.jlmap {
     exports io.github.makbn.jlmap.model;
     exports io.github.makbn.jlmap.exception;
     exports io.github.makbn.jlmap.geojson;
-    
+
     // Opens for reflection (if needed by frameworks)
     opens io.github.makbn.jlmap to javafx.graphics;
     opens io.github.makbn.jlmap.layer to javafx.graphics;
