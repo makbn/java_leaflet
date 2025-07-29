@@ -1,5 +1,7 @@
-package io.github.makbn.jlmap;
+package io.github.makbn.jlmap.demo;
 
+import io.github.makbn.jlmap.JLMapView;
+import io.github.makbn.jlmap.JLProperties;
 import io.github.makbn.jlmap.geojson.JLGeoJsonObject;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
 import io.github.makbn.jlmap.listener.OnJLObjectActionListener;
@@ -20,15 +22,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import lombok.NonNull;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
  * @author Mehdi Akbarian Rastaghi (@makbn)
  */
-public class Leaflet extends Application {
-    static final Logger log = LogManager.getLogger(Leaflet.class);
+@Slf4j
+public class LeafletTestJFX extends Application {
 
     @Override
     public void start(Stage stage) {
@@ -111,18 +112,16 @@ public class Leaflet extends Application {
             @Override
             public void onAction(Event event) {
                 if (event instanceof MoveEvent moveEvent) {
-                    log.info("move event: " + moveEvent.action() + " c:" + moveEvent.center()
-                            + " \t bounds:" + moveEvent.bounds() + "\t z:" + moveEvent.zoomLevel());
+                    log.info("move event: {} c: {} \t bounds: {} \t z: {}", moveEvent.action(), moveEvent.center(),
+                            moveEvent.bounds(), moveEvent.zoomLevel());
                 } else if (event instanceof ClickEvent clickEvent) {
-                    log.info("click event: " + clickEvent.center());
+                    log.info("click event: {}", clickEvent.center());
                     map.getUiLayer().addPopup(clickEvent.center(), "New Click Event!", JLOptions.builder()
                             .closeButton(false)
                             .autoClose(false).build());
                 } else if (event instanceof ZoomEvent zoomEvent) {
-                    log.info("zoom event: " + zoomEvent.zoomLevel());
+                    log.info("zoom event: {}", zoomEvent.zoomLevel());
                 }
-
-
             }
         });
     }
@@ -196,15 +195,15 @@ public class Leaflet extends Application {
                 new JLLatLng(45, -104.05),
                 new JLLatLng(41, -104.05)
         };
-        map.getVectorLayer().addPolygon(vertices).setOnActionListener(new OnJLObjectActionListener<JLPolygon>() {
+        map.getVectorLayer().addPolygon(vertices).setOnActionListener(new OnJLObjectActionListener<>() {
             @Override
             public void click(JLPolygon jlPolygon, Action action) {
-                log.info("object click listener for jlPolygon:" + jlPolygon);
+                log.info("object click listener for jlPolygon: {}", jlPolygon);
             }
 
             @Override
             public void move(JLPolygon jlPolygon, Action action) {
-                log.info("object move listener for jlPolygon:" + jlPolygon);
+                log.info("object move listener for jlPolygon: {}", jlPolygon);
             }
         });
     }

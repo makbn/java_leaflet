@@ -1,13 +1,13 @@
 package io.github.makbn.jlmap.layer;
 
 import io.github.makbn.jlmap.JLMapCallbackHandler;
+import io.github.makbn.jlmap.engine.JLWebEngine;
 import io.github.makbn.jlmap.exception.JLException;
 import io.github.makbn.jlmap.geojson.JLGeoJsonContent;
 import io.github.makbn.jlmap.geojson.JLGeoJsonFile;
 import io.github.makbn.jlmap.geojson.JLGeoJsonObject;
 import io.github.makbn.jlmap.geojson.JLGeoJsonURL;
 import io.github.makbn.jlmap.layer.leaflet.LeafletGeoJsonLayerInt;
-import javafx.scene.web.WebEngine;
 import lombok.NonNull;
 import netscape.javascript.JSObject;
 
@@ -26,7 +26,7 @@ public class JLGeoJsonLayer extends JLLayer implements LeafletGeoJsonLayerInt {
     JLGeoJsonContent fromContent;
     JSObject window;
 
-    public JLGeoJsonLayer(WebEngine engine,
+    public JLGeoJsonLayer(JLWebEngine engine,
                           JLMapCallbackHandler callbackHandler) {
         super(engine, callbackHandler);
         this.fromUrl = new JLGeoJsonURL();
