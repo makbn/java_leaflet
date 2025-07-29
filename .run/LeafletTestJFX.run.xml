@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="LeafletTestJFX" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="io.github.makbn.jlmap.LeafletTestJFX" />
+    <module name="jlmap" />
+    <option name="VM_PARAMETERS" value="--module-path $PROJECT_DIR$/../../sdk/javafx-sdk-17.0.16/lib --add-exports javafx.web/com.sun.javafx.webkit=ALL-UNNAMED --add-modules=javafx.graphics,javafx.web,javafx.swing" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="io.github.makbn.jlmap.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
