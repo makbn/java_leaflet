@@ -1,0 +1,344 @@
+<html lang="EN">
+<head>
+    <title>Java - Leaflet</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-providers@2.0.0/leaflet-providers.min.js"></script>
+    <script>
+        function eventHandler(e, event_id) {
+            if (getJLID(e) === undefined)
+                return
+
+            if (event_id === 'click') {
+                jlMapCallbackListener('click', getJLID(e), findIndex(e), JSON.stringify({
+                    "lat": e.latlng.lat,
+                    "lng": e.latlng.lng
+                }), e.layerPoint);
+            } else if (['move', 'moveend', 'movestart', 'drag', 'dragstart', 'dragend', 'zoom'].includes(event_id)) {
+                try {
+                    let mapZoom = jlmap.getZoom();
+                    let jlId = getJLID(e);
+                    let index = findIndex(e);
+
+                    let center = index == -2 ? JSON.stringify({
+                        "lat": jlmap.getCenter().lat,
+                        "lng": jlmap.getCenter().lng
+                    }) : JSON.stringify({
+                        "lat": e.target.getLatLng().lat,
+                        "lng": e.target.getLatLng().lng
+                    });
+                    let bounds = JSON.stringify({
+                        "northEast": {
+                            "lat": jlmap.getBounds().getNorthEast().lat,
+                            "lng": jlmap.getBounds().getNorthEast().lng,
+                        },
+                        "southWest": {
+                            "lat": jlmap.getBounds().getSouthWest().lat,
+                            "lng": jlmap.getBounds().getSouthWest().lng,
+                        }
+                    });
+                    jlMapCallbackListener(event_id, jlId, index, jlmap.getZoom(), center, bounds);
+                } catch (e) {
+                    jlMapCallbackListener("error", e.message, e.messageerror);
+                }
+
+            }
+        }
+
+        function getMap() {
+            return jlmap;
+        }
+
+        function findIndex(e) {
+            let jlid = getJLID(e);
+
+            switch (jlid) {
+                case 'circle':
+                    return circles.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'circle_marker':
+                    return circleMarkers.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'polyline':
+                    return polyLines.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'polygon':
+                    return polygons.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                case 'marker':
+                    return markers.findIndex(c => c !== undefined && (e.target === c || e.propagatedFrom === c));
+                default:
+                    return -2;
+            }
+        }
+
+        function jlMapCallbackListener(functionName, param1, param2, param3, param4, param5) {
+            //do nothing
+        }
+
+        function getJLID(e) {
+            if (e.propagatedFrom) {
+                return e.propagatedFrom.jlid;
+            } else if (e.sourceTarget) {
+                return e.sourceTarget.jlid;
+            } else if (e.target) {
+                return e.target.jlid;
+            }
+            return undefined;
+        }
+
+        let fun = jlMapCallbackListener;
+        jlMapCallbackListener = function () {
+            app.functionCalled(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+            fun.apply(this, arguments);
+        }
+
+    </script>
+</head>
+<body style="margin: 0; background-color: #191a1a;">
+<div id="mapid" style="width: 100%; height: 100%; position: relative; background-color: #191a1a;"
+     class="leaflet-container leaflet-retina leaflet-safari leaflet-fade-anim leaflet-grab leaflet-touch-drag"
+     tabindex="0">
+    <div class="leaflet-control-container">
+        <div class="leaflet-top leaflet-right"></div>
+        <div class="leaflet-bottom leaflet-left"></div>
+        <div class="leaflet-bottom leaflet-right" style="margin-right: 16px; border-radius: 30px;">
+
+            <div style="padding: 1px 8px 1px 8px; margin-right: 8px; border-radius: 30px; background-color: rgba(256, 256,256, 0.7);"
+                 class=" leaflet-control"><a href="https://github.com/makbn/java_leaflet"
+                                             title="A JS library for interactive maps"> Java-Leaflet</a>
+                | Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a
+                        href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let urlParams = new URLSearchParams(window.location.search);
+    var geoJsons = [];
+    var markers = [];
+    var circleMarkers = [];
+    var popups = [];
+    var polyLines = []
+    var polygons = []
+    var circles = []
+
+    var jlmap = L.map('mapid', {zoomControl: urlParams.get('zoomControl') === 'true'});
+
+    jlmap.setView([35.63, 51.45], 3);
+    jlmap.jlid = 'main_map';
+
+    var jlFeatureGroup = L.featureGroup().addTo(jlmap);
+
+    L.tileLayer.provider(urlParams.get('mapid')).addTo(jlmap);
+
+    function addGeoJson(variableName) {
+        geojson = L.geoJson(JSON.parse(window[variableName])).addTo(jlmap);
+        let len = geoJsons.push(geojson);
+        return len - 1;
+    }
+
+    function removeGeoJson(index) {
+        let geoJson = geoJsons[index];
+        if (geoJson === undefined) {
+            return false;
+        }
+        delete circleMarkers[index];
+        jlmap.removeLayer(geoJson);
+        return true;
+    }
+
+    function addSVGOverlay(svgElementBounds, innerHTML, viewBox) {
+        var svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+        svgElement.setAttribute('viewBox', viewBox /*"0 0 200 200"*/);
+        svgElement.innerHTML = innerHTML;
+        L.svgOverlay(svgElement, svgElementBounds)
+            .addTo(jlmap);
+    }
+
+    jlmap.on('click', e => eventHandler(e, 'click'));
+    jlmap.on('move', e => eventHandler(e, 'move'));
+    jlmap.on('movestart', e => eventHandler(e, 'movestart'));
+    jlmap.on('moveend', e => eventHandler(e, 'moveend'));
+    jlmap.on('zoom', e => eventHandler(e, 'zoom'));
+
+    jlFeatureGroup.on("click", e => eventHandler(e, 'click'));
+
+    function addCircleMarker(latlng, radius = 10, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
+        var circleM = L.circleMarker(latlng, {
+            "radius": radius,
+            "color": color,
+            "fillColor": fillColor,
+            "weight": weight,
+            "stroke": stroke,
+            "fill": fill,
+            "opacity": opacity,
+            "fillOpacity": fillOpacity,
+            "smoothFactor": smoothFactor
+        });
+        circleM.jlid = 'circle_marker';
+        circleM.addTo(jlFeatureGroup);
+        let len = circleMarkers.push(circleM);
+        return len - 1;
+    }
+
+    function removeCircleMarker(index) {
+        let circleM = circleMarkers[index];
+        if (circleM === undefined) {
+            return false;
+        }
+        delete circleMarkers[index];
+        jlmap.removeLayer(circleM);
+        return true;
+    }
+
+    function addCircle(latlng, radius = 200, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
+        var circle = L.circle(latlng, {
+            "radius": radius,
+            "color": color,
+            "fillColor": fillColor,
+            "weight": weight,
+            "stroke": stroke,
+            "fill": fill,
+            "opacity": opacity,
+            "fillOpacity": fillOpacity,
+            "smoothFactor": smoothFactor
+        });
+        circle.jlid = 'circle';
+        circle.addTo(jlFeatureGroup);
+        let len = circles.push(circle);
+        return len - 1;
+
+    }
+
+    function removeCircle(index) {
+        let circle = circles[index];
+        if (circle === undefined) {
+            return false;
+        }
+        delete circles[index];
+        jlmap.removeLayer(circle);
+        return true;
+    }
+
+
+    function addPolygon(latlngs, color, fillColor, weight = 3, stroke = true, fill = true, opacity = 1.0, fillOpacity = 0.2, smoothFactor = 1.0) {
+        var polygon = L.polygon(latlngs, {
+            "color": color,
+            "fillColor": fillColor,
+            "weight": weight,
+            "stroke": stroke,
+            "fill": fill,
+            "opacity": opacity,
+            "fillOpacity": fillOpacity,
+            "smoothFactor": smoothFactor
+        });
+        polygon.jlid = 'polygon';
+        polygon.addTo(jlFeatureGroup);
+        let len = polygons.push(polygon);
+        return len - 1;
+    }
+
+    function removePolygon(index) {
+        let polygon = polygons[index];
+        if (polygon === undefined) {
+            return false;
+        }
+        delete polygons[index];
+        jlmap.removeLayer(polygon);
+        return true;
+    }
+
+    function addPolyLine(latlngs, color, weight = 3, stroke = true, opacity = 1.0, smoothFactor = 1.0) {
+        var polyline = L.polyline(latlngs, {
+            "color": color,
+            "stroke": stroke,
+            "weight": weight,
+            "opacity": opacity,
+            "smoothFactor": smoothFactor
+        });
+        polyline.jlid = 'polyline';
+        polyline.addTo(jlFeatureGroup);
+
+        let len = polyLines.push(polyline);
+        return len - 1;
+    }
+
+    function removePolyLine(index) {
+        let polyline = polyLines[index];
+        if (polyline === undefined) {
+            return false;
+        }
+        delete polyLines[index];
+        jlmap.removeLayer(polyline);
+        return true;
+    }
+
+    function setLatLng(lat, lng, duration, animated) {
+        jlmap.setView([lat, lng], jlmap.getZoom(), {
+            "animate": animated,
+            "pan": {
+                "duration": duration
+            }
+        });
+    }
+
+    function addPopup(lat, lng, text, closeButton = true, autoClose = true) {
+        let newPopup = L.popup({"closeButton": closeButton, "autoClose": autoClose})
+            .setLatLng([lat, lng])
+            .setContent(text)
+            .openOn(jlmap);
+        let len = popups.push(newPopup);
+        return len - 1;
+    }
+
+    function removePopup(index) {
+        let popup = popups[index];
+        if (index === undefined) {
+            return false;
+        }
+
+        delete popups[index];
+        jlmap.removeLayer(popup);
+        return true;
+    }
+
+    function removeNativeAttr() {
+        document.getElementsByClassName('leaflet-control-attribution')[0].remove()
+    }
+
+    function addMarker(lat, lng, text, draggable = false) {
+        let marker = L.marker([lat, lng],
+            {
+                "draggable": draggable
+            });
+        let len = markers.push(marker);
+
+        marker.jlid = 'marker';
+
+        marker.on('move', e => eventHandler(e, 'move'));
+        marker.on('moveend', e => eventHandler(e, 'moveend'));
+        marker.on('drag', e => eventHandler(e, 'drag'));
+        marker.on('movestart', e => eventHandler(e, 'movestart'));
+
+        marker.addTo(jlFeatureGroup);
+        if (text) {
+            marker.bindPopup(text)
+                .openPopup();
+        }
+        return len - 1;
+    }
+
+    function removeMarker(index) {
+        let marker = markers[index]
+        if (marker === undefined) {
+            return false;
+        }
+        delete markers[index];
+        jlmap.removeLayer(marker)
+        return true;
+    }
+</script>
+</body>
+</html>
