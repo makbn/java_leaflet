@@ -28,11 +28,7 @@ module io.github.makbn.jlmap.fx {
     exports io.github.makbn.jlmap.fx.demo;
 
     // Opens for reflection (if needed by frameworks)
-    opens io.github.makbn.jlmap to javafx.graphics;
-    opens io.github.makbn.jlmap.layer to javafx.graphics;
-    opens io.github.makbn.jlmap.model to javafx.graphics;
-    opens io.github.makbn.jlmap.geojson to javafx.graphics;
+    opens io.github.makbn.jlmap.fx to javafx.graphics;
     opens io.github.makbn.jlmap.fx.engine to javafx.graphics;
     opens io.github.makbn.jlmap.fx.demo to javafx.graphics;
-    opens io.github.makbn.jlmap.fx to javafx.graphics;
 } 
