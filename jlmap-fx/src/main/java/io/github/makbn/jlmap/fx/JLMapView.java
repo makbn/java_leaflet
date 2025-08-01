@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class JLJavaFXMapView extends AnchorPane implements JLMapController {
+public class JLMapView extends AnchorPane implements JLMapController {
     JLMapOption mapOption;
     JLWebEngine jlWebEngine;
     WebView webView;
@@ -61,8 +61,8 @@ public class JLJavaFXMapView extends AnchorPane implements JLMapController {
     OnJLMapViewListener mapListener;
 
     @Builder
-    public JLJavaFXMapView(@NonNull JLProperties.MapType mapType,
-                           @NonNull JLLatLng startCoordinate, boolean showZoomController) {
+    public JLMapView(@NonNull JLProperties.MapType mapType,
+                     @NonNull JLLatLng startCoordinate, boolean showZoomController) {
         super();
         this.mapOption = JLMapOption.builder()
                 .startCoordinate(startCoordinate)

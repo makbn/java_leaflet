@@ -1,7 +1,7 @@
 package io.github.makbn.jlmap.fx.demo;
 
+import io.github.makbn.jlmap.fx.JLMapView;
 import io.github.makbn.jlmap.JLMapController;
-import io.github.makbn.jlmap.fx.JLJavaFXMapView;
 import io.github.makbn.jlmap.JLProperties;
 import io.github.makbn.jlmap.geojson.JLGeoJsonObject;
 import io.github.makbn.jlmap.listener.OnJLMapViewListener;
@@ -34,7 +34,7 @@ public class LeafletTestJFX extends Application {
     @Override
     public void start(Stage stage) {
         //building a new map view
-        final JLJavaFXMapView map = JLJavaFXMapView
+        final JLMapView map = JLMapView
                 .builder()
                 .mapType(JLProperties.MapType.OSM_MAPNIK)
                 .showZoomController(true)
@@ -140,7 +140,7 @@ public class LeafletTestJFX extends Application {
         };
     }
 
-    private void addMultiPolyline(JLJavaFXMapView map) {
+    private void addMultiPolyline(JLMapView map) {
         JLLatLng[][] verticesT = new JLLatLng[2][];
 
         verticesT[0] = new JLLatLng[]{
@@ -158,7 +158,7 @@ public class LeafletTestJFX extends Application {
         map.getVectorLayer().addMultiPolyline(verticesT);
     }
 
-    private void addPolyline(JLJavaFXMapView map) {
+    private void addPolyline(JLMapView map) {
         JLLatLng[] vertices = new JLLatLng[]{
                 new JLLatLng(51.509, -0.08),
                 new JLLatLng(51.503, -0.06),
@@ -168,7 +168,7 @@ public class LeafletTestJFX extends Application {
         map.getVectorLayer().addPolyline(vertices);
     }
 
-    private void addPolygon(JLJavaFXMapView map) {
+    private void addPolygon(JLMapView map) {
 
         JLLatLng[][][] vertices = new JLLatLng[2][][];
 
