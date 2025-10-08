@@ -3,10 +3,10 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 COPY pom.xml ./
-COPY jlmap-vaadin-demo ./jlmap-vaadin-demo
 COPY jlmap-api ./jlmap-api
-COPY jlmap-core ./jlmap-core
 COPY jlmap-vaadin ./jlmap-vaadin
+COPY jlmap-vaadin-demo ./jlmap-vaadin-demo
+
 RUN mvn -f jlmap-vaadin-demo/pom.xml clean package -Pproduction
 
 # --- Stage 2: Create the final image ---
