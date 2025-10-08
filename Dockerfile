@@ -13,6 +13,6 @@ RUN mvn -f jlmap-vaadin-demo/pom.xml clean package -Pproduction
 FROM eclipse-temurin:17-jre
 
 WORKDIR /app
-COPY --from=build /app/jlmap-vaadin-demo/target/jlmap-vaadin-demo-2.0.0.jar app.jar
+COPY --from=build /app/jlmap-vaadin-demo/target/jlmap-vaadin-demo-*.jar app.jar
 EXPOSE 80
 ENTRYPOINT ["java", "-Dserver.port=80", "-jar", "app.jar"]
