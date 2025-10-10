@@ -1,20 +1,15 @@
-# Java Leaflet (JLeaflet)
+# Java Leaflet (JLMAP): A Java Interactive Map For Vaadin and JavaFx
 
-A Java library for integrating Leaflet maps into Java applications with full Java Platform Module System (JPMS) support.
-Now supporting both **JavaFX** and **Vaadin** implementations with a unified API.
+A Java library for integrating [Leaflet](https://github.com/Leaflet/Leaflet) maps into Java applications with full Java Platform Module System (JPMS) support.
+Now supporting both [**JavaFX**](https://openjfx.io/) and [**Vaadin**](https://vaadin.com/) implementations with a unified API.
 
 * Current version: **v2.0.0**
 
 Project Source Code: https://github.com/makbn/java_leaflet
+
 Project Wiki: https://github.com/makbn/java_leaflet/wiki
 
 ![Java-Leaflet Test](https://github.com/makbn/java_leaflet/blob/master/.github/doc/app.png?raw=true)
-
-> Leaflet is the leading open-source JavaScript library for mobile-friendly interactive maps. Weighing just about 38 KB
-> of JS, it has all the mapping features most developers ever need.
-> Leaflet is designed with simplicity, performance and usability in mind. It works efficiently across all major desktop
-> and mobile platforms, can be extended with lots of plugins, has a beautiful, easy to use and well-documented API and a
-> simple, readable source code that is a joy to contribute to.
 
 ## 🏗️ Project Structure
 
@@ -77,6 +72,7 @@ Add the JavaFX dependency to your `pom.xml`:
     <version>2.0.0</version>
 </dependency>
 ```
+- https://central.sonatype.com/artifact/io.github.makbn/jlmap-fx
 
 ### Vaadin Implementation
 
@@ -90,6 +86,7 @@ Add the Vaadin dependency to your `pom.xml`:
     <version>2.0.0</version>
 </dependency>
 ```
+- https://central.sonatype.com/artifact/io.github.makbn/jlmap-vaadin
 
 Also rememebr to allow the module in your properties file:
 
@@ -353,14 +350,6 @@ jar --describe-module --file target/jlmap-vaadin-2.0.0.jar
 4. Ensure all tests pass
 5. Submit a pull request
 
-## License
-
-Since v2.0.0 This project is licensed under the GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 - see
-the [LICENSE](LICENSE) file for details.
-
-## Author
-
-**Matt Akbarian** (@makbn)
 
 ## Roadmap
 
@@ -378,9 +367,12 @@ the [LICENSE](LICENSE) file for details.
 - [ ] implement object specific `JLOptions`
 - [ ] Performance optimizations
 
-## Additional Resources
 
-- **API Documentation**: See the `jlmap-api` module for core interfaces
-- **JavaFX Examples**: See the `jlmap-fx` module for JavaFX usage
-- **Vaadin Examples**: See the `jlmap-vaadin-demo` for Vaadin usage
-- **Leaflet Documentation**: [https://leafletjs.com/](https://leafletjs.com/)
+## License
+
+Since v2.0.0 This project is licensed under the GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 - see
+the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**Matt Akbarian** (@makbn)
