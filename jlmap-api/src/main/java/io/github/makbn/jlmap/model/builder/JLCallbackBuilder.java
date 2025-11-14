@@ -27,7 +27,11 @@ public class JLCallbackBuilder {
         return switch (event) {
             case ADD, REMOVE -> """
                     this.%3$s.on('%1$s', e => {
-                        e.sourceTarget.getElement().setAttribute('id', e.target.uuid);
+                        if (typeof e.sourceTarget.getElement === 'function' 
+                        && e.sourceTarget.getElement()
+                        && typeof  e.sourceTarget.getElement().setAttribute === 'function') {
+                            e.sourceTarget.getElement().setAttribute('id', e.target.uuid);
+                        }
                         this.jlMapElement.$server.eventHandler('%1$s', '%2$s', e.target.uuid, this.map.getZoom(),
                          JSON.stringify((typeof e.target.getLatLng === "function") ? 
                          e.target.getLatLng() : 
