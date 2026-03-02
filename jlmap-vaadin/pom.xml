@@ -27,7 +27,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>24.8.6</vaadin.version>
+        <vaadin.version>24.9.12</vaadin.version>
         <org.springframework.boot.version>3.5.4</org.springframework.boot.version>
     </properties>
 
