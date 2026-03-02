@@ -16,10 +16,10 @@ import java.util.Set;
  * Handles status change events for the map, such as zoom and resize actions.
  * <p>
  * This event handler listens for map status changes and dispatches corresponding events:
- * @see ZoomEvent
- * @see ResizeEvent
  *
  * @author Matt Akbarian  (@makbn)
+ * @see ZoomEvent
+ * @see ResizeEvent
  */
 @Slf4j
 public class JLStatusChangeEventHandler implements JLEventHandler<Object> {
@@ -36,18 +36,18 @@ public class JLStatusChangeEventHandler implements JLEventHandler<Object> {
     public void handle(@NonNull JLMap<?> map, @NonNull Object source, @NonNull String functionName, OnJLActionListener<Object> listener, Object param1, Object param2, Object param3, Object param4, Object param5) {
         switch (functionName) {
             case FUNCTION_ZOOM -> listener
-                    .onAction(source, new ZoomEvent(JLAction.ZOOM, gson.fromJson(String.valueOf(param3), Integer.class), gson.fromJson(String.valueOf(param5), JLBounds.class)));
+                    .onAction(source, new ZoomEvent(JLAction.ZOOM, gson.fromJson(String.valueOf(param3), Double.class), gson.fromJson(String.valueOf(param5), JLBounds.class)));
             case FUNCTION_ZOOM_START -> listener
-                    .onAction(source, new ZoomEvent(JLAction.ZOOM_START, gson.fromJson(String.valueOf(param3), Integer.class), gson.fromJson(String.valueOf(param5), JLBounds.class)));
+                    .onAction(source, new ZoomEvent(JLAction.ZOOM_START, gson.fromJson(String.valueOf(param3), Double.class), gson.fromJson(String.valueOf(param5), JLBounds.class)));
             case FUNCTION_ZOOM_END -> listener
-                    .onAction(source, new ZoomEvent(JLAction.ZOOM_END, gson.fromJson(String.valueOf(param3), Integer.class), gson.fromJson(String.valueOf(param5), JLBounds.class)));
+                    .onAction(source, new ZoomEvent(JLAction.ZOOM_END, gson.fromJson(String.valueOf(param3), Double.class), gson.fromJson(String.valueOf(param5), JLBounds.class)));
             case FUNCTION_RESIZE -> listener
                     .onAction(source, new ResizeEvent(JLAction.RESIZE,
                             getDimension(param4, false, "Width"),
                             getDimension(param4, false, "Height"),
                             getDimension(param4, true, "Width"),
                             getDimension(param4, true, "Height"),
-                            gson.fromJson(String.valueOf(param3), Integer.class)));
+                            gson.fromJson(String.valueOf(param3), Double.class)));
             default -> log.error("{} not implemented!", functionName);
         }
     }

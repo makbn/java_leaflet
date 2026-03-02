@@ -78,14 +78,14 @@ public class JLDragEventHandler implements JLEventHandler<JLObject<?>> {
         return new MoveEvent(action,
                 gson.fromJson(String.valueOf(param4), JLLatLng.class),
                 gson.fromJson(String.valueOf(param5), JLBounds.class),
-                Integer.parseInt(String.valueOf(param3)));
+                Double.parseDouble(String.valueOf(param3)));
     }
 
     private @NotNull DragEvent getDragEvent(JLAction action, Object param4, Object param5, Object param3) {
         return new DragEvent(action,
                 gson.fromJson(String.valueOf(param4), JLLatLng.class),
                 gson.fromJson(String.valueOf(param5), JLBounds.class),
-                Integer.parseInt(String.valueOf(param3)));
+                Double.parseDouble(String.valueOf(param3)));
     }
 
     @Override
