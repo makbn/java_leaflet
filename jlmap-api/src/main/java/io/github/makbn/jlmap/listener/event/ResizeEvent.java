@@ -23,6 +23,6 @@ import io.github.makbn.jlmap.listener.JLAction;
  * @author Matt Akbarian  (@makbn)
  * @see <a href="https://leafletjs.com/reference.html#resizeevent">Leaflet ResizeEvent Documentation</a>
  */
-public record ResizeEvent(JLAction action, int newWidth, int newHeight, int oldWidth, int oldHeight, int zoom)
+public record ResizeEvent(JLAction action, int newWidth, int newHeight, int oldWidth, int oldHeight, double zoom)
         implements Event {
 }

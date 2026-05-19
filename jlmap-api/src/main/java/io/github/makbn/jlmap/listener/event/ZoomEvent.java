@@ -22,6 +22,6 @@ import io.github.makbn.jlmap.model.JLBounds;
  *
  * @author Matt Akbarian  (@makbn)
  * */
-public record ZoomEvent(JLAction action, int zoomLevel, JLBounds bounds) implements Event {
+public record ZoomEvent(JLAction action, double zoomLevel, JLBounds bounds) implements Event {
 
 }

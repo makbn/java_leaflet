@@ -82,6 +82,7 @@ public class JLMapView extends AnchorPane implements JLMap<Object> {
                 .build();
         this.layers = new HashMap<>();
         this.webView = new WebView();
+        this.webView.setCache(false);
         this.jlWebEngine = new JLJavaFXEngine(webView.getEngine());
         this.jlMapCallbackHandler = new JLMapEventHandler();
         initialize();

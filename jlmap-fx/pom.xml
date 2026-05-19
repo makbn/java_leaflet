@@ -105,7 +105,6 @@
                     <useModulePath>false</useModulePath>
                     <argLine>
                         --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
-                        --add-opens javafx.graphics/com.sun.javafx.application=org.testfx.junit5
                         --add-opens javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED
                         --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
                         --add-opens javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED
@@ -116,7 +115,6 @@
                         --add-opens java.desktop/java.awt.font=ALL-UNNAMED
                         --add-opens javafx.web/com.sun.javafx.webkit=ALL-UNNAMED
                         --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
-                        --add-exports javafx.graphics/com.sun.glass.ui=org.testfx.monocle
                         -Djava.awt.headless=true
                         -Dtestfx.robot=glass
                         -Dtestfx.headless=true
@@ -258,7 +256,7 @@
         <dependency>
             <groupId>org.testfx</groupId>
             <artifactId>openjfx-monocle</artifactId>
-            <version>jdk-12.0.1+2</version>
+            <version>17.0.10</version>
             <scope>test</scope>
         </dependency>
         <!-- Additional utility libraries for testing -->

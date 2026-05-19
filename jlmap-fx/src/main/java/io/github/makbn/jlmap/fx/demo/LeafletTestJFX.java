@@ -19,6 +19,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import javafx.scene.control.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Matt Akbarian  (@makbn)
@@ -27,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LeafletTestJFX extends Application {
 
     public static final String MAP_API_KEY = "rNGhTaIpQWWH7C6QGKzF";
+    public static final List<JLObject<?>> elements = new ArrayList<>();
 
     @Override
     public void start(Stage stage) {
@@ -41,8 +46,15 @@ public class LeafletTestJFX extends Application {
                         .lng(-114.07)
                         .build())
                 .build();
+
+        Button deleteButton = new Button("Delete Elements");
         //creating a window
         AnchorPane root = new AnchorPane(map);
+        root.getChildren().add(deleteButton);
+        AnchorPane.setRightAnchor(deleteButton, 24.0);
+        AnchorPane.setBottomAnchor(deleteButton, 24.0);
+
+
         root.setBackground(Background.EMPTY);
         root.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
         root.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
@@ -76,6 +88,13 @@ public class LeafletTestJFX extends Application {
                 loadDemoElement(map);
             }
         });
+
+        deleteButton.setOnAction(event -> {
+            elements.stream()
+                    .filter(JLObjectBase.class::isInstance)
+                    .map(JLObjectBase.class::cast)
+                    .forEach(JLObjectBase::remove);
+        });
     }
 
     private void loadDemoElement(JLMapView map) {
@@ -108,29 +127,31 @@ public class LeafletTestJFX extends Application {
                 });
 
         calgaryMarker.setOnActionListener(getListener());
+        elements.add(calgaryMarker);
 
-        map.getVectorLayer()
+        elements.add(map.getVectorLayer()
                 .addCircleMarker(JLLatLng.builder()
                         .lat(51.0447)
                         .lng(-114.0719)
-                        .build());
+                        .build()));
 
-        map.getVectorLayer()
+        elements.add(map.getVectorLayer()
                 .addCircle(JLLatLng.builder()
                         .lat(35.63)
                         .lng(51.45)
-                        .build(), 30000, JLOptions.DEFAULT);
+                        .build(), 30000, JLOptions.DEFAULT));
 
         // JLImageOverlay demo: Eiffel Tower image over Paris
         JLBounds eiffelBounds = JLBounds.builder()
                 .southWest(JLLatLng.builder().lat(47.857).lng(3.293).build())
                 .northEast(JLLatLng.builder().lat(49.860).lng(1.298).build())
                 .build();
-        map.getUiLayer().addImage(
+
+        elements.add(map.getUiLayer().addImage(
                 eiffelBounds,
                 "https://img.favpng.com/1/24/8/eiffel-tower-eiffel-tower-illustrated-landmark-L5szYqrZ_t.jpg",
                 JLOptions.DEFAULT
-        );
+        ));
 
         // map zoom functionalities
         map.getControlLayer().setZoom(3);
@@ -148,6 +169,14 @@ public class LeafletTestJFX extends Application {
 
                         .build());
 
+
+        elements.add(geoJsonObject);
+        geoJsonObject.addContextMenu().addItem("Remove")
+                        .setOnMenuItemListener(selectedItem -> {
+                            if ("remove".equalsIgnoreCase(selectedItem.getId())) {
+                                geoJsonObject.remove();
+                            }
+                        });
 
         log.info("geojson loaded! id: {}", geoJsonObject.getJLId());
     }
@@ -171,7 +200,7 @@ public class LeafletTestJFX extends Application {
                 new JLLatLng(42.51, 20.047)
         };
 
-        map.getVectorLayer().addMultiPolyline(verticesT);
+        elements.add(map.getVectorLayer().addMultiPolyline(verticesT));
     }
 
     private void addPolyline(JLMapView map) {
@@ -181,7 +210,7 @@ public class LeafletTestJFX extends Application {
                 new JLLatLng(51.51, -0.047)
         };
 
-        map.getVectorLayer().addPolyline(vertices);
+        elements.add(map.getVectorLayer().addPolyline(vertices));
     }
 
     private void addPolygon(JLMapView map) {
@@ -211,7 +240,9 @@ public class LeafletTestJFX extends Application {
                 new JLLatLng(45, -104.05),
                 new JLLatLng(41, -104.05)
         };
-        map.getVectorLayer().addPolygon(vertices).setOnActionListener((source, event) ->
+        JLPolygon polygon = map.getVectorLayer().addPolygon(vertices);
+        polygon.setOnActionListener((source, event) ->
                 log.info("{} event for: {}", event.action(), source));
+        elements.add(polygon);
     }
 }

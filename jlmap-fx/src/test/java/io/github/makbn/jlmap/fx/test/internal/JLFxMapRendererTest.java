@@ -224,4 +224,63 @@ class JLFxMapRendererTest {
         assertThat(html).contains("<meta charset=\"utf-8\"");
         assertThat(html).contains("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"");
     }
+
+    @Test
+    void render_shouldIncludeL_DISABLE_3D_flag() {
+        // Given
+        JLMapOption option = createDefaultMapOption();
+
+        // When
+        String html = renderer.render(option);
+
+        // Then - L_DISABLE_3D must be present to force 2D CSS transforms in JavaFX WebView
+        assertThat(html).contains("window.L_DISABLE_3D = true");
+    }
+
+    @Test
+    void render_shouldIncludePointerEventRemoval() {
+        // Given
+        JLMapOption option = createDefaultMapOption();
+
+        // When
+        String html = renderer.render(option);
+
+        // Then - PointerEvent must be disabled for JavaFX WebView compatibility
+        assertThat(html).contains("window.PointerEvent");
+        assertThat(html).contains("PointerEvent = undefined");
+    }
+
+    @Test
+    void render_shouldPlaceCompatibilityPatchBeforeLeafletScript() {
+        // Given
+        JLMapOption option = createDefaultMapOption();
+
+        // When
+        String html = renderer.render(option);
+
+        // Then - The patch must appear before Leaflet loads so L_DISABLE_3D is checked during init
+        int patchPosition = html.indexOf("L_DISABLE_3D");
+        int leafletScriptPosition = html.indexOf("leaflet@1.9.4/dist/leaflet.js");
+        assertThat(patchPosition)
+                .as("L_DISABLE_3D must appear before Leaflet script")
+                .isGreaterThan(-1)
+                .isLessThan(leafletScriptPosition);
+    }
+
+    @Test
+    void render_shouldWrapCompatibilityPatchInIIFE() {
+        // Given
+        JLMapOption option = createDefaultMapOption();
+
+        // When
+        String html = renderer.render(option);
+
+        // Then - The patch should be wrapped in an IIFE with try-catch for safety
+        int iifeStart = html.indexOf("(function()");
+        int disableFlag = html.indexOf("L_DISABLE_3D");
+        int iifeEnd = html.indexOf("})();");
+        assertThat(iifeStart).isGreaterThan(-1);
+        assertThat(disableFlag).isGreaterThan(iifeStart);
+        assertThat(iifeEnd).isGreaterThan(disableFlag);
+    }
 }

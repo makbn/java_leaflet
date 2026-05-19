@@ -37,5 +37,5 @@ import io.github.makbn.jlmap.model.JLLatLng;
  * @author Matt Akbarian  (@makbn)
  */
 public record DragEvent(JLAction action, JLLatLng center,
-                        JLBounds bounds, int zoomLevel) implements Event {
+                        JLBounds bounds, double zoomLevel) implements Event {
 }

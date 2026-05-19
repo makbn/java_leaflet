@@ -23,6 +23,7 @@ public class JLFxMapRenderer implements JLMapRenderer {
                         title(TITLE),
                         meta().withCharset("utf-8"),
                         meta().withName("viewport").withContent("width=device-width, initial-scale=1.0"),
+                        script(webViewCompatibilityPatch()),
                         link()
                                 .withRel("stylesheet")
                                 .withHref(CSS_LEAFLET)
@@ -133,6 +134,29 @@ public class JLFxMapRenderer implements JLMapRenderer {
                 function eventHandler(functionType, jlType, uuid, param1, param2, param3) {
                      jlMapServerCallbackDelegate(functionType, jlType, uuid, param1, param2, param3);
                 }
+                """;
+    }
+
+    @NonNull
+    private String webViewCompatibilityPatch() {
+        //language=js
+        return """
+                (function() {
+                    try {
+                        // JavaFX WebView (versions > 19) has GPU compositing bugs with CSS translate3d
+                        // that corrupt tile positioning and cause black rectangles. Forcing Leaflet to
+                        // use 2D CSS transforms avoids the broken compositor path entirely.
+                        window.L_DISABLE_3D = true;
+                
+                        // JavaFX WebView can expose a broken PointerEvent implementation that
+                        // interferes with Leaflet's interaction handling. Force the mouse event path.
+                        if (window.PointerEvent) {
+                            window.PointerEvent = undefined;
+                        }
+                    } catch (e) {
+                        // best-effort only
+                    }
+                })();
                 """;
     }
 
